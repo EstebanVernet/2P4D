@@ -39,7 +39,9 @@
         // DEFAULT_SHADOW_COLOR: "rgba(0,0,0,0.5)",
         // DEFAULT_GROUP_FONT: 24,
 
-        NODE_TITLE_HEIGHT: 30,
+        CONNEXION_COLOR: '#C1C1C0',
+        
+        NODE_TITLE_HEIGHT: 0,
         NODE_TITLE_TEXT_Y: 20,
         NODE_SLOT_HEIGHT: 20,
         NODE_WIDGET_HEIGHT: 20,
@@ -5416,7 +5418,7 @@ LGraphNode.prototype.executeAction = function(action)
         this.render_collapsed_slots = true;
         this.render_execution_order = false;
         this.render_title_colored = true;
-		this.render_link_tooltip = true;
+		this.render_link_tooltip = false;
 
         this.links_render_mode = LiteGraph.SPLINE_LINK;
 
@@ -8355,15 +8357,15 @@ LGraphNode.prototype.executeAction = function(action)
         ctx.font = "10px Arial";
         ctx.fillStyle = "#888";
 		ctx.textAlign = "left";
-        if (this.graph) {
-            ctx.fillText( "T: " + this.graph.globaltime.toFixed(2) + "s", 5, 13 * 1 );
-            ctx.fillText("I: " + this.graph.iteration, 5, 13 * 2 );
-            ctx.fillText("N: " + this.graph._nodes.length + " [" + this.visible_nodes.length + "]", 5, 13 * 3 );
-            ctx.fillText("V: " + this.graph._version, 5, 13 * 4);
-            ctx.fillText("FPS:" + this.fps.toFixed(2), 5, 13 * 5);
-        } else {
-            ctx.fillText("No graph selected", 5, 13 * 1);
-        }
+        // if (this.graph) {
+        //     ctx.fillText( "T: " + this.graph.globaltime.toFixed(2) + "s", 5, 13 * 1 );
+        //     ctx.fillText("I: " + this.graph.iteration, 5, 13 * 2 );
+        //     ctx.fillText("N: " + this.graph._nodes.length + " [" + this.visible_nodes.length + "]", 5, 13 * 3 );
+        //     ctx.fillText("V: " + this.graph._version, 5, 13 * 4);
+        //     ctx.fillText("FPS:" + this.fps.toFixed(2), 5, 13 * 5);
+        // } else {
+        //     ctx.fillText("No graph selected", 5, 13 * 1);
+        // }
         ctx.restore();
     };
 
@@ -8694,15 +8696,17 @@ LGraphNode.prototype.executeAction = function(action)
                         ctx.globalAlpha = 0.4 * editor_alpha;
                     }
 
-                    ctx.fillStyle =
-                        slot.link != null
-                            ? slot.color_on ||
-                              this.default_connection_color_byType[slot_type] ||
-                              this.default_connection_color.input_on
-                            : slot.color_off ||
-                              this.default_connection_color_byTypeOff[slot_type] ||
-                              this.default_connection_color_byType[slot_type] ||
-                              this.default_connection_color.input_off;
+                    ctx.fillStyle = LiteGraph.CONNEXION_COLOR;
+
+                    // ctx.fillStyle =
+                    //     slot.link != null
+                    //         ? slot.color_on ||
+                    //           this.default_connection_color_byType[slot_type] ||
+                    //           this.default_connection_color.input_on
+                    //         : slot.color_off ||
+                    //           this.default_connection_color_byTypeOff[slot_type] ||
+                    //           this.default_connection_color_byType[slot_type] ||
+                    //           this.default_connection_color.input_off;
 
                     var pos = node.getConnectionPos(true, i, slot_pos);
                     pos[0] -= node.pos[0];
@@ -8758,22 +8762,27 @@ LGraphNode.prototype.executeAction = function(action)
 						if(low_quality)
 	                        ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8 ); //faster
 						else
-	                        ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2);
+	                        ctx.beginPath();
+	                        ctx.moveTo(pos[0] - 6, pos[1] - 6);
+	                        ctx.lineTo(pos[0] + 6, pos[1]);
+	                        ctx.lineTo(pos[0] - 6, pos[1] + 6);
+	                        ctx.fill();
+	                        // ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2);
                     }
                     ctx.fill();
 
                     //render name
-                    if (render_text) {
-                        var text = slot.label != null ? slot.label : slot.name;
-                        if (text) {
-                            ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
-                            if (horizontal || slot.dir == LiteGraph.UP) {
-                                ctx.fillText(text, pos[0], pos[1] - 10);
-                            } else {
-                                ctx.fillText(text, pos[0] + 10, pos[1] + 5);
-                            }
-                        }
-                    }
+                    // if (render_text) {
+                    //     var text = slot.label != null ? slot.label : slot.name;
+                    //     if (text) {
+                    //         ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
+                    //         if (horizontal || slot.dir == LiteGraph.UP) {
+                    //             ctx.fillText(text, pos[0], pos[1] - 10);
+                    //         } else {
+                    //             ctx.fillText(text, pos[0] + 10, pos[1] + 5);
+                    //         }
+                    //     }
+                    // }
                 }
             }
 
@@ -8800,15 +8809,17 @@ LGraphNode.prototype.executeAction = function(action)
                         max_y = pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5;
                     }
 
-                    ctx.fillStyle =
-                        slot.links && slot.links.length
-                            ? slot.color_on ||
-                              this.default_connection_color_byType[slot_type] ||
-                              this.default_connection_color.output_on
-                            : slot.color_off ||
-                              this.default_connection_color_byTypeOff[slot_type] ||
-                              this.default_connection_color_byType[slot_type] ||
-                              this.default_connection_color.output_off;
+                    ctx.fillStyle = LiteGraph.CONNEXION_COLOR;
+
+                    // ctx.fillStyle =
+                    //     slot.links && slot.links.length
+                    //         ? slot.color_on ||
+                    //           this.default_connection_color_byType[slot_type] ||
+                    //           this.default_connection_color.output_on
+                    //         : slot.color_off ||
+                    //           this.default_connection_color_byTypeOff[slot_type] ||
+                    //           this.default_connection_color_byType[slot_type] ||
+                    //           this.default_connection_color.output_off;
                     ctx.beginPath();
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
 
@@ -8857,7 +8868,12 @@ LGraphNode.prototype.executeAction = function(action)
 						if(low_quality)
 	                        ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8 );
 						else
-	                        ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2);
+                            ctx.beginPath();
+                            ctx.moveTo(pos[0] - 6, pos[1] - 6);
+                            ctx.lineTo(pos[0] + 6, pos[1]);
+                            ctx.lineTo(pos[0] - 6, pos[1] + 6);
+                            ctx.fill();
+	                        // ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2);
                     }
 
                     //trigger
@@ -8866,21 +8882,21 @@ LGraphNode.prototype.executeAction = function(action)
 
                     //if(slot.links != null && slot.links.length)
                     ctx.fill();
-					if(!low_quality && doStroke)
-	                    ctx.stroke();
+					// if(!low_quality && doStroke)
+	                //     ctx.stroke();
 
                     //render output name
-                    if (render_text) {
-                        var text = slot.label != null ? slot.label : slot.name;
-                        if (text) {
-                            ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
-                            if (horizontal || slot.dir == LiteGraph.DOWN) {
-                                ctx.fillText(text, pos[0], pos[1] - 8);
-                            } else {
-                                ctx.fillText(text, pos[0] - 10, pos[1] + 5);
-                            }
-                        }
-                    }
+                    // if (render_text) {
+                    //     var text = slot.label != null ? slot.label : slot.name;
+                    //     if (text) {
+                    //         ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
+                    //         if (horizontal || slot.dir == LiteGraph.DOWN) {
+                    //             ctx.fillText(text, pos[0], pos[1] - 8);
+                    //         } else {
+                    //             ctx.fillText(text, pos[0] - 10, pos[1] + 5);
+                    //         }
+                    //     }
+                    // }
                 }
             }
 
@@ -9059,315 +9075,315 @@ LGraphNode.prototype.executeAction = function(action)
         selected,
         mouse_over
     ) {
-        //bg rect
-        ctx.strokeStyle = fgcolor;
-        ctx.fillStyle = bgcolor;
+        // //bg rect
+        // ctx.strokeStyle = fgcolor;
+        // ctx.fillStyle = bgcolor;
 
-        var title_height = LiteGraph.NODE_TITLE_HEIGHT;
-        var low_quality = this.ds.scale < 0.5;
+        // var title_height = LiteGraph.NODE_TITLE_HEIGHT;
+        // var low_quality = this.ds.scale < 0.5;
 
-        //render node area depending on shape
-        var shape =
-            node._shape || node.constructor.shape || LiteGraph.ROUND_SHAPE;
+        // //render node area depending on shape
+        // var shape =
+        //     node._shape || node.constructor.shape || LiteGraph.ROUND_SHAPE;
 
-        var title_mode = node.constructor.title_mode;
+        // var title_mode = node.constructor.title_mode;
 
-        var render_title = true;
-        if (title_mode == LiteGraph.TRANSPARENT_TITLE || title_mode == LiteGraph.NO_TITLE) {
-            render_title = false;
-        } else if (title_mode == LiteGraph.AUTOHIDE_TITLE && mouse_over) {
-            render_title = true;
-        }
+        // var render_title = true;
+        // if (title_mode == LiteGraph.TRANSPARENT_TITLE || title_mode == LiteGraph.NO_TITLE) {
+        //     render_title = false;
+        // } else if (title_mode == LiteGraph.AUTOHIDE_TITLE && mouse_over) {
+        //     render_title = true;
+        // }
 
-        var area = tmp_area;
-        area[0] = 0; //x
-        area[1] = render_title ? -title_height : 0; //y
-        area[2] = size[0] + 1; //w
-        area[3] = render_title ? size[1] + title_height : size[1]; //h
+        // var area = tmp_area;
+        // area[0] = 0; //x
+        // area[1] = render_title ? -title_height : 0; //y
+        // area[2] = size[0] + 1; //w
+        // area[3] = render_title ? size[1] + title_height : size[1]; //h
 
-        var old_alpha = ctx.globalAlpha;
+        // var old_alpha = ctx.globalAlpha;
 
-        //full node shape
-        //if(node.flags.collapsed)
-        {
-            ctx.beginPath();
-            if (shape == LiteGraph.BOX_SHAPE || low_quality) {
-                ctx.fillRect(area[0], area[1], area[2], area[3]);
-            } else if (
-                shape == LiteGraph.ROUND_SHAPE ||
-                shape == LiteGraph.CARD_SHAPE
-            ) {
-                // ctx.roundRect(
-                //     area[0],
-                //     area[1],
-                //     area[2],
-                //     area[3],
-                //     shape == LiteGraph.CARD_SHAPE ? [this.round_radius,this.round_radius,0,0] : [this.round_radius] 
-                // );
-            } else if (shape == LiteGraph.CIRCLE_SHAPE) {
-                ctx.arc(
-                    size[0] * 0.5,
-                    size[1] * 0.5,
-                    size[0] * 0.5,
-                    0,
-                    Math.PI * 2
-                );
-            }
-            ctx.fill();
+        // //full node shape
+        // //if(node.flags.collapsed)
+        // {
+        //     ctx.beginPath();
+        //     if (shape == LiteGraph.BOX_SHAPE || low_quality) {
+        //         // ctx.fillRect(area[0], area[1], area[2], area[3]);
+        //     } else if (
+        //         shape == LiteGraph.ROUND_SHAPE ||
+        //         shape == LiteGraph.CARD_SHAPE
+        //     ) {
+        //         // ctx.roundRect(
+        //         //     area[0],
+        //         //     area[1],
+        //         //     area[2],
+        //         //     area[3],
+        //         //     shape == LiteGraph.CARD_SHAPE ? [this.round_radius,this.round_radius,0,0] : [this.round_radius] 
+        //         // );
+        //     } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+        //         ctx.arc(
+        //             size[0] * 0.5,
+        //             size[1] * 0.5,
+        //             size[0] * 0.5,
+        //             0,
+        //             Math.PI * 2
+        //         );
+        //     }
+        //     ctx.fill();
 
-			//separator
-			if(!node.flags.collapsed && render_title)
-			{
-				ctx.shadowColor = "transparent";
-				ctx.fillStyle = "rgba(0,0,0,0.2)";
-				ctx.fillRect(0, -1, area[2], 2);
-			}
-        }
-        ctx.shadowColor = "transparent";
+		// 	//separator
+		// 	if(!node.flags.collapsed && render_title)
+		// 	{
+		// 		ctx.shadowColor = "transparent";
+		// 		ctx.fillStyle = "rgba(0,0,0,0.2)";
+		// 		ctx.fillRect(0, -1, area[2], 2);
+		// 	}
+        // }
+        // ctx.shadowColor = "transparent";
 
-        if (node.onDrawBackground) {
-            node.onDrawBackground(ctx, this, this.canvas, this.graph_mouse );
-        }
+        // if (node.onDrawBackground) {
+        //     node.onDrawBackground(ctx, this, this.canvas, this.graph_mouse );
+        // }
 
-        //title bg (remember, it is rendered ABOVE the node)
-        if (render_title || title_mode == LiteGraph.TRANSPARENT_TITLE) {
-            //title bar
-            if (node.onDrawTitleBar) {
-                node.onDrawTitleBar( ctx, title_height, size, this.ds.scale, fgcolor );
-            } else if (
-                title_mode != LiteGraph.TRANSPARENT_TITLE &&
-                (node.constructor.title_color || this.render_title_colored)
-            ) {
-                var title_color = node.constructor.title_color || fgcolor;
+        // //title bg (remember, it is rendered ABOVE the node)
+        // if (render_title || title_mode == LiteGraph.TRANSPARENT_TITLE) {
+        //     //title bar
+        //     if (node.onDrawTitleBar) {
+        //         node.onDrawTitleBar( ctx, title_height, size, this.ds.scale, fgcolor );
+        //     } else if (
+        //         title_mode != LiteGraph.TRANSPARENT_TITLE &&
+        //         (node.constructor.title_color || this.render_title_colored)
+        //     ) {
+        //         var title_color = node.constructor.title_color || fgcolor;
 
-                if (node.flags.collapsed) {
-                    ctx.shadowColor = LiteGraph.DEFAULT_SHADOW_COLOR;
-                }
+        //         if (node.flags.collapsed) {
+        //             ctx.shadowColor = LiteGraph.DEFAULT_SHADOW_COLOR;
+        //         }
 
-                //* gradient test
-                if (this.use_gradients) {
-                    var grad = LGraphCanvas.gradients[title_color];
-                    if (!grad) {
-                        grad = LGraphCanvas.gradients[ title_color ] = ctx.createLinearGradient(0, 0, 400, 0);
-                        grad.addColorStop(0, title_color); // TODO refactor: validate color !! prevent DOMException
-                        grad.addColorStop(1, "#000");
-                    }
-                    ctx.fillStyle = grad;
-                } else {
-                    ctx.fillStyle = title_color;
-                }
+        //         //* gradient test
+        //         if (this.use_gradients) {
+        //             var grad = LGraphCanvas.gradients[title_color];
+        //             if (!grad) {
+        //                 grad = LGraphCanvas.gradients[ title_color ] = ctx.createLinearGradient(0, 0, 400, 0);
+        //                 grad.addColorStop(0, title_color); // TODO refactor: validate color !! prevent DOMException
+        //                 grad.addColorStop(1, "#000");
+        //             }
+        //             ctx.fillStyle = grad;
+        //         } else {
+        //             ctx.fillStyle = title_color;
+        //         }
 
-                //ctx.globalAlpha = 0.5 * old_alpha;
-                ctx.beginPath();
-                if (shape == LiteGraph.BOX_SHAPE || low_quality) {
-                    ctx.rect(0, -title_height, size[0] + 1, title_height);
-                } else if (  shape == LiteGraph.ROUND_SHAPE || shape == LiteGraph.CARD_SHAPE ) {
-                    // ctx.roundRect(
-                    //     0,
-                    //     -title_height,
-                    //     size[0] + 1,
-                    //     title_height,
-                    //     node.flags.collapsed ? [this.round_radius] : [this.round_radius,this.round_radius,0,0]
-                    // );
-                }
-                ctx.fill();
-                ctx.shadowColor = "transparent";
-            }
+        //         //ctx.globalAlpha = 0.5 * old_alpha;
+        //         ctx.beginPath();
+        //         if (shape == LiteGraph.BOX_SHAPE || low_quality) {
+        //             ctx.rect(0, -title_height, size[0] + 1, title_height);
+        //         } else if (  shape == LiteGraph.ROUND_SHAPE || shape == LiteGraph.CARD_SHAPE ) {
+        //             // ctx.roundRect(
+        //             //     0,
+        //             //     -title_height,
+        //             //     size[0] + 1,
+        //             //     title_height,
+        //             //     node.flags.collapsed ? [this.round_radius] : [this.round_radius,this.round_radius,0,0]
+        //             // );
+        //         }
+        //         ctx.fill();
+        //         ctx.shadowColor = "transparent";
+        //     }
 
-            var colState = false;
-            if (LiteGraph.node_box_coloured_by_mode){
-                if(LiteGraph.NODE_MODES_COLORS[node.mode]){
-                    colState = LiteGraph.NODE_MODES_COLORS[node.mode];
-                }
-            }
-            if (LiteGraph.node_box_coloured_when_on){
-                colState = node.action_triggered ? "#FFF" : (node.execute_triggered ? "#AAA" : colState);
-            }
+        //     var colState = false;
+        //     if (LiteGraph.node_box_coloured_by_mode){
+        //         if(LiteGraph.NODE_MODES_COLORS[node.mode]){
+        //             colState = LiteGraph.NODE_MODES_COLORS[node.mode];
+        //         }
+        //     }
+        //     if (LiteGraph.node_box_coloured_when_on){
+        //         colState = node.action_triggered ? "#FFF" : (node.execute_triggered ? "#AAA" : colState);
+        //     }
             
-            //title box
-            var box_size = 10;
-            if (node.onDrawTitleBox) {
-                node.onDrawTitleBox(ctx, title_height, size, this.ds.scale);
-            } else if (
-                shape == LiteGraph.ROUND_SHAPE ||
-                shape == LiteGraph.CIRCLE_SHAPE ||
-                shape == LiteGraph.CARD_SHAPE
-            ) {
-                if (low_quality) {
-                    ctx.fillStyle = "black";
-                    ctx.beginPath();
-                    ctx.arc(
-                        title_height * 0.5,
-                        title_height * -0.5,
-                        box_size * 0.5 + 1,
-                        0,
-                        Math.PI * 2
-                    );
-                    ctx.fill();
-                }
+        //     //title box
+        //     var box_size = 10;
+        //     if (node.onDrawTitleBox) {
+        //         node.onDrawTitleBox(ctx, title_height, size, this.ds.scale);
+        //     } else if (
+        //         shape == LiteGraph.ROUND_SHAPE ||
+        //         shape == LiteGraph.CIRCLE_SHAPE ||
+        //         shape == LiteGraph.CARD_SHAPE
+        //     ) {
+        //         if (low_quality) {
+        //             ctx.fillStyle = "black";
+        //             ctx.beginPath();
+        //             ctx.arc(
+        //                 title_height * 0.5,
+        //                 title_height * -0.5,
+        //                 box_size * 0.5 + 1,
+        //                 0,
+        //                 Math.PI * 2
+        //             );
+        //             ctx.fill();
+        //         }
                 
-                ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
-				if(low_quality)
-					ctx.fillRect( title_height * 0.5 - box_size *0.5, title_height * -0.5 - box_size *0.5, box_size , box_size  );
-				else
-				{
-					ctx.beginPath();
-					ctx.arc(
-						title_height * 0.5,
-						title_height * -0.5,
-						box_size * 0.5,
-						0,
-						Math.PI * 2
-					);
-					ctx.fill();
-				}
-            } else {
-                if (low_quality) {
-                    ctx.fillStyle = "black";
-                    ctx.fillRect(
-                        (title_height - box_size) * 0.5 - 1,
-                        (title_height + box_size) * -0.5 - 1,
-                        box_size + 2,
-                        box_size + 2
-                    );
-                }
-                ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
-                ctx.fillRect(
-                    (title_height - box_size) * 0.5,
-                    (title_height + box_size) * -0.5,
-                    box_size,
-                    box_size
-                );
-            }
-            ctx.globalAlpha = old_alpha;
+        //         ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
+		// 		if(low_quality)
+		// 			ctx.fillRect( title_height * 0.5 - box_size *0.5, title_height * -0.5 - box_size *0.5, box_size , box_size  );
+		// 		else
+		// 		{
+		// 			ctx.beginPath();
+		// 			// ctx.arc(
+		// 			// 	title_height * 0.5,
+		// 			// 	title_height * -0.5,
+		// 			// 	box_size * 0.5,
+		// 			// 	0,
+		// 			// 	Math.PI * 2
+		// 			// );
+		// 			// ctx.fill();
+		// 		}
+        //     } else {
+        //         if (low_quality) {
+        //             ctx.fillStyle = "black";
+        //             ctx.fillRect(
+        //                 (title_height - box_size) * 0.5 - 1,
+        //                 (title_height + box_size) * -0.5 - 1,
+        //                 box_size + 2,
+        //                 box_size + 2
+        //             );
+        //         }
+        //         ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
+        //         ctx.fillRect(
+        //             (title_height - box_size) * 0.5,
+        //             (title_height + box_size) * -0.5,
+        //             box_size,
+        //             box_size
+        //         );
+        //     }
+        //     ctx.globalAlpha = old_alpha;
 
-            //title text
-            if (node.onDrawTitleText) {
-                node.onDrawTitleText(
-                    ctx,
-                    title_height,
-                    size,
-                    this.ds.scale,
-                    this.title_text_font,
-                    selected
-                );
-            }
-            if (!low_quality) {
-                ctx.font = this.title_text_font;
-                var title = String(node.getTitle());
-                if (title) {
-                    if (selected) {
-                        ctx.fillStyle = LiteGraph.NODE_SELECTED_TITLE_COLOR;
-                    } else {
-                        ctx.fillStyle =
-                            node.constructor.title_text_color ||
-                            this.node_title_color;
-                    }
-                    if (node.flags.collapsed) {
-                        ctx.textAlign = "left";
-                        var measure = ctx.measureText(title);
-                        ctx.fillText(
-                            title.substr(0,20), //avoid urls too long
-                            title_height,// + measure.width * 0.5,
-                            LiteGraph.NODE_TITLE_TEXT_Y - title_height
-                        );
-                        ctx.textAlign = "left";
-                    } else {
-                        ctx.textAlign = "left";
-                        ctx.fillText(
-                            title,
-                            title_height,
-                            LiteGraph.NODE_TITLE_TEXT_Y - title_height
-                        );
-                    }
-                }
-            }
+        //     //title text
+        //     if (node.onDrawTitleText) {
+        //         node.onDrawTitleText(
+        //             ctx,
+        //             title_height,
+        //             size,
+        //             this.ds.scale,
+        //             this.title_text_font,
+        //             selected
+        //         );
+        //     }
+        //     if (!low_quality) {
+        //         ctx.font = this.title_text_font;
+        //         var title = String(node.getTitle());
+        //         if (title) {
+        //             if (selected) {
+        //                 ctx.fillStyle = LiteGraph.NODE_SELECTED_TITLE_COLOR;
+        //             } else {
+        //                 ctx.fillStyle =
+        //                     node.constructor.title_text_color ||
+        //                     this.node_title_color;
+        //             }
+        //             if (node.flags.collapsed) {
+        //                 ctx.textAlign = "left";
+        //                 var measure = ctx.measureText(title);
+        //                 ctx.fillText(
+        //                     title.substr(0,20), //avoid urls too long
+        //                     title_height,// + measure.width * 0.5,
+        //                     LiteGraph.NODE_TITLE_TEXT_Y - title_height
+        //                 );
+        //                 ctx.textAlign = "left";
+        //             } else {
+        //                 // ctx.textAlign = "left";
+        //                 // ctx.fillText(
+        //                 //     title,
+        //                 //     title_height,
+        //                 //     LiteGraph.NODE_TITLE_TEXT_Y - title_height
+        //                 // );
+        //             }
+        //         }
+        //     }
 
-			//subgraph box
-			if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
-				var w = LiteGraph.NODE_TITLE_HEIGHT;
-				var x = node.size[0] - w;
-				var over = LiteGraph.isInsideRectangle( this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x+2, -w+2, w-4, w-4 );
-				ctx.fillStyle = over ? "#888" : "#555";
-				if( shape == LiteGraph.BOX_SHAPE || low_quality)
-					ctx.fillRect(x+2, -w+2, w-4, w-4);
-				else
-				{
-					ctx.beginPath();
-					ctx.roundRect(x+2, -w+2, w-4, w-4,[4]);
-					ctx.fill();
-				}
-				ctx.fillStyle = "#333";
-				ctx.beginPath();
-				ctx.moveTo(x + w * 0.2, -w * 0.6);
-				ctx.lineTo(x + w * 0.8, -w * 0.6);
-				ctx.lineTo(x + w * 0.5, -w * 0.3);
-				ctx.fill();
-			}
+		// 	//subgraph box
+		// 	if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
+		// 		var w = LiteGraph.NODE_TITLE_HEIGHT;
+		// 		var x = node.size[0] - w;
+		// 		var over = LiteGraph.isInsideRectangle( this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x+2, -w+2, w-4, w-4 );
+		// 		ctx.fillStyle = over ? "#888" : "#555";
+		// 		if( shape == LiteGraph.BOX_SHAPE || low_quality)
+		// 			ctx.fillRect(x+2, -w+2, w-4, w-4);
+		// 		else
+		// 		{
+		// 			ctx.beginPath();
+		// 			ctx.roundRect(x+2, -w+2, w-4, w-4,[4]);
+		// 			ctx.fill();
+		// 		}
+		// 		ctx.fillStyle = "#333";
+		// 		ctx.beginPath();
+		// 		ctx.moveTo(x + w * 0.2, -w * 0.6);
+		// 		ctx.lineTo(x + w * 0.8, -w * 0.6);
+		// 		ctx.lineTo(x + w * 0.5, -w * 0.3);
+		// 		ctx.fill();
+		// 	}
 
-			//custom title render
-            if (node.onDrawTitle) {
-                node.onDrawTitle(ctx);
-            }
-        }
+		// 	//custom title render
+        //     if (node.onDrawTitle) {
+        //         node.onDrawTitle(ctx);
+        //     }
+        // }
 
-        //render selection marker
-        if (selected) {
-            if (node.onBounding) {
-                node.onBounding(area);
-            }
+        // //render selection marker
+        // if (selected) {
+        //     if (node.onBounding) {
+        //         node.onBounding(area);
+        //     }
 
-            if (title_mode == LiteGraph.TRANSPARENT_TITLE) {
-                area[1] -= title_height;
-                area[3] += title_height;
-            }
-            ctx.lineWidth = 1;
-            ctx.globalAlpha = 0.8;
-            ctx.beginPath();
-            if (shape == LiteGraph.BOX_SHAPE) {
-                ctx.rect(
-                    -6 + area[0],
-                    -6 + area[1],
-                    12 + area[2],
-                    12 + area[3]
-                );
-            } else if (
-                shape == LiteGraph.ROUND_SHAPE ||
-                (shape == LiteGraph.CARD_SHAPE && node.flags.collapsed)
-            ) {
-                // ctx.roundRect(
-                //     -6 + area[0],
-                //     -6 + area[1],
-                //     12 + area[2],
-                //     12 + area[3],
-                //     [this.round_radius * 2]
-                // );
-            } else if (shape == LiteGraph.CARD_SHAPE) {
-                ctx.roundRect(
-                    -6 + area[0],
-                    -6 + area[1],
-                    12 + area[2],
-                    12 + area[3],
-                    [this.round_radius * 2,2,this.round_radius * 2,2]
-                );
-            } else if (shape == LiteGraph.CIRCLE_SHAPE) {
-                ctx.arc(
-                    size[0] * 0.5,
-                    size[1] * 0.5,
-                    size[0] * 0.5 + 6,
-                    0,
-                    Math.PI * 2
-                );
-            }
-            ctx.strokeStyle = LiteGraph.NODE_BOX_OUTLINE_COLOR;
-            ctx.stroke();
-            ctx.strokeStyle = fgcolor;
-            ctx.globalAlpha = 1;
-        }
+        //     if (title_mode == LiteGraph.TRANSPARENT_TITLE) {
+        //         area[1] -= title_height;
+        //         area[3] += title_height;
+        //     }
+        //     ctx.lineWidth = 1;
+        //     ctx.globalAlpha = 0.8;
+        //     ctx.beginPath();
+        //     if (shape == LiteGraph.BOX_SHAPE) {
+        //         ctx.rect(
+        //             -6 + area[0],
+        //             -6 + area[1],
+        //             12 + area[2],
+        //             12 + area[3]
+        //         );
+        //     } else if (
+        //         shape == LiteGraph.ROUND_SHAPE ||
+        //         (shape == LiteGraph.CARD_SHAPE && node.flags.collapsed)
+        //     ) {
+        //         // ctx.roundRect(
+        //         //     -6 + area[0],
+        //         //     -6 + area[1],
+        //         //     12 + area[2],
+        //         //     12 + area[3],
+        //         //     [this.round_radius * 2]
+        //         // );
+        //     } else if (shape == LiteGraph.CARD_SHAPE) {
+        //         ctx.roundRect(
+        //             -6 + area[0],
+        //             -6 + area[1],
+        //             12 + area[2],
+        //             12 + area[3],
+        //             [this.round_radius * 2,2,this.round_radius * 2,2]
+        //         );
+        //     } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+        //         ctx.arc(
+        //             size[0] * 0.5,
+        //             size[1] * 0.5,
+        //             size[0] * 0.5 + 6,
+        //             0,
+        //             Math.PI * 2
+        //         );
+        //     }
+        //     ctx.strokeStyle = LiteGraph.NODE_BOX_OUTLINE_COLOR;
+        //     ctx.stroke();
+        //     ctx.strokeStyle = fgcolor;
+        //     ctx.globalAlpha = 1;
+        // }
         
-        // these counter helps in conditioning drawing based on if the node has been executed or an action occurred
-        if (node.execute_triggered>0) node.execute_triggered--;
-        if (node.action_triggered>0) node.action_triggered--;
+        // // these counter helps in conditioning drawing based on if the node has been executed or an action occurred
+        // if (node.execute_triggered>0) node.execute_triggered--;
+        // if (node.action_triggered>0) node.action_triggered--;
     };
 
     var margin_area = new Float32Array(4);
@@ -9764,7 +9780,7 @@ LGraphNode.prototype.executeAction = function(action)
 
             //circle
             ctx.beginPath();
-            ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2);
+            // ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2);
             ctx.fill();
         }
 
