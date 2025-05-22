@@ -1,5 +1,6 @@
 @import url(./toolbar.css);
 @import url(./nodes.css);
+@import url(./svg.css);
 
 * {
     box-sizing: border-box;

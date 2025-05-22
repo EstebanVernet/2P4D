@@ -1,4 +1,14 @@
+svg {
+    overflow: visible;
+}
+
 .dom-node {
     position: absolute;
-    outline: solid 1px red;
+    /* outline: solid 1px red; */
+    pointer-events: none;
+    overflow: visible;
+}
+
+.dom-node *:not(svg) {
+    pointer-events: all;
 }
