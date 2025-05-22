@@ -1,0 +1,35 @@
+@import url(./toolbar.css);
+@import url(./nodes.css);
+
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --box-top-color: #444444;
+    --box-color: #545454;
+
+    --text-color: #D9D9D9;
+}
+
+.box {
+    background-color: var(--box-color);
+    border-top: solid 6px var(--box-top-color);
+    user-select: none;
+}
+
+#workspace {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
