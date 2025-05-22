@@ -1,3 +1,4 @@
-.node {
-    background-color: #ff0000;
+.dom-node {
+    position: absolute;
+    outline: solid 1px red;
 }
