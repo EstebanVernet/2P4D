@@ -7989,20 +7989,13 @@ LGraphNode.prototype.executeAction = function(action)
 
                 if (this._highlight_output) {
                     ctx.beginPath();
-                    if (shape === LiteGraph.ARROW_SHAPE) {
-                        ctx.moveTo(this._highlight_output[0] + 8, this._highlight_output[1] + 0.5);
-                        ctx.lineTo(this._highlight_output[0] - 4, this._highlight_output[1] + 6 + 0.5);
-                        ctx.lineTo(this._highlight_output[0] - 4, this._highlight_output[1] - 6 + 0.5);
-                        ctx.closePath();
-                    } else {
-                        ctx.arc(
-                            this._highlight_output[0],
-                            this._highlight_output[1],
-                            6,
-                            0,
-                            Math.PI * 2
-                        );
-                    }
+                    ctx.arc(
+                        this._highlight_output[0],
+                        this._highlight_output[1],
+                        6,
+                        0,
+                        Math.PI * 2
+                    );
                     ctx.fill();
                 }
             }

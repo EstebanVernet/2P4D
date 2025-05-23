@@ -12,3 +12,42 @@ svg {
 .dom-node *:not(svg) {
     pointer-events: all;
 }
+
+.operator {
+    cursor: pointer;
+}
+
+/* Operator node */
+
+
+.box-operator {
+    position: absolute;
+    padding: 8px;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, calc(-100% - 16px));
+    display: flex;
+    gap: 8px;
+
+    background-color: var(--box-color);
+    border: solid 1px white;
+}
+
+.box-operator.hidden {
+    display: none;
+}
+
+.box-operator img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    border: solid 1px white;
+}
+
+.operator-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none !important;
+}
