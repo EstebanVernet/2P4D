@@ -1,6 +1,6 @@
 .anchor {
     fill: #4F7FFF;
-    cursor: grab;
+    cursor: pointer;
 }
 .anchor.secondary { fill: #4FD9FF; }
 .anchor.negative { fill: #FF4F4F; }
@@ -10,5 +10,5 @@
 .line.negative { stroke: #FF4F4F; }
 
 .no-pointer-events {
-    pointer-events: none;
+    pointer-events: none !important;
 }

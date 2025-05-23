@@ -119,7 +119,7 @@ instances.anchorNumber = function (parent, cx, cy) {
     });
 
     parent.rect(8, 8)
-    .center(8, 8)
+    .center(cx, cy)
     .attr({ class: 'anchor no-pointer-events' })
 }
 
@@ -153,8 +153,8 @@ function compute(data) {
 }
 
 function createAnchorNumber(parent) {
-    const svgElement = SVG().addTo(parent).size(16, 16);
-    const elm = new instances.anchorNumber(svgElement, 8, 8);
+    const svgElement = SVG().addTo(parent).size(16, 32);
+    const elm = new instances.anchorNumber(svgElement, 8, 16);
     return elm;
 }
 
@@ -172,3 +172,15 @@ function createAnchorNumber(parent) {
 //         }
 //     });
 // }
+
+LiteGraph.registerNodeType("custom/number", DOM_NODE.new(
+    [16, 32],
+    function(elm) {
+        elm.properties = { value: 0 };
+
+        createAnchorNumber(elm.container);
+
+        // elm.addInput("input1", "number");
+        elm.addOutput("output", "number");
+    }
+));

@@ -33,21 +33,12 @@ TOOLBAR.append('Papers', 'Create user-defined instructions that you can reuse ev
 // node_const.connect(0, custom_node, 0);
 // custom_node.connect(0, node_watch, 0);
 
-LiteGraph.registerNodeType("custom/test_node", DOM_NODE.new(
-  [16, 16],
-  function(elm) {
-    elm.properties = { value: 0 };
+var node_number = LiteGraph.createNode("custom/number");
+node_number.pos = [400, 300];
+graph.add(node_number);
 
-    console.log(elm.container)
-    const num = createAnchorNumber(elm.container);
-
-    // elm.addInput("input1", "number");
-    elm.addOutput("output", "number");
-  }
-));
-
-var custom_node = LiteGraph.createNode("custom/test_node");
-custom_node.pos = [400, 300];
-graph.add(custom_node);
+var node_operator = LiteGraph.createNode("custom/operator");
+node_operator.pos = [500, 300];
+graph.add(node_operator);
 
 graph.start();

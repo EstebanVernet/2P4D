@@ -14,6 +14,8 @@
      */
 
     var LiteGraph = (global.LiteGraph = {
+        SHOW_GRAPH_BOUNDS: false, 
+        
         VERSION: 0.4,
 
         CANVAS_GRID_SIZE: 10,
@@ -6418,7 +6420,7 @@ LGraphNode.prototype.executeAction = function(action)
         }
 
         //get node over
-        var node = this.graph.getNodeOnPos(e.canvasX,e.canvasY,this.visible_nodes);
+        var node = this.graph.getNodeOnPos(e.canvasX,e.canvasY,this.visible_nodes, 12);
 
         if (this.dragging_rectangle)
 		{
@@ -6503,9 +6505,11 @@ LGraphNode.prototype.executeAction = function(action)
                         } else {
                             //check if I have a slot below de mouse
                             var slot = this.isOverNodeInput( node, e.canvasX, e.canvasY, pos );
+                            // console.log(slot)
                             if (slot != -1 && node.inputs[slot]) {
                                 var slot_type = node.inputs[slot].type;
                                 if ( LiteGraph.isValidConnection( this.connecting_output.type, slot_type ) ) {
+                                    // FIX THIS &&&&
                                     this._highlight_input = pos;
 									this._highlight_input_slot = node.inputs[slot]; // XXX CHECK THIS
                                 }
@@ -6709,7 +6713,8 @@ LGraphNode.prototype.executeAction = function(action)
 			var node = this.graph.getNodeOnPos(
 							e.canvasX,
 							e.canvasY,
-							this.visible_nodes
+							this.visible_nodes,
+                            12
 						);
 			
             if (this.dragging_rectangle) {
@@ -7003,30 +7008,23 @@ LGraphNode.prototype.executeAction = function(action)
         canvasy,
         slot_pos
     ) {
+        // var slot = this.isOverNodeInput( node, e.canvasX, e.canvasY, pos );
         if (node.inputs) {
             for (var i = 0, l = node.inputs.length; i < l; ++i) {
                 var input = node.inputs[i];
                 var link_pos = node.getConnectionPos(true, i);
-                var is_inside = false;
-                if (node.horizontal) {
-                    is_inside = isInsideRectangle(
-                        canvasx,
-                        canvasy,
-                        link_pos[0] - 5,
-                        link_pos[1] - 10,
-                        10,
-                        20
-                    );
-                } else {
-                    is_inside = isInsideRectangle(
-                        canvasx,
-                        canvasy,
-                        link_pos[0] - 10,
-                        link_pos[1] - 5,
-                        40,
-                        10
-                    );
-                }
+
+                var is_inside = false; // &&&&
+                is_inside = isInsideRectangle(
+                    canvasx,
+                    canvasy,
+                    link_pos[0] - 10,
+                    link_pos[1] - 5,
+                    40,
+                    10
+                );
+                // console.log('is_inside', is_inside)
+                
                 if (is_inside) {
                     if (slot_pos) {
                         slot_pos[0] = link_pos[0];
@@ -7926,7 +7924,7 @@ LGraphNode.prototype.executeAction = function(action)
                     null,
                     false,
                     null,
-                    link_color,
+                    LiteGraph.CONNEXION_COLOR,
                     connDir,
                     LiteGraph.CENTER
                 );
@@ -7957,45 +7955,38 @@ LGraphNode.prototype.executeAction = function(action)
                     ctx.closePath();
                 } 
                 else {
-                    ctx.arc(
-                        this.connecting_pos[0],
-                        this.connecting_pos[1],
-                        4,
-                        0,
-                        Math.PI * 2
-                    );
-	                ctx.fill();
-					ctx.beginPath();
-                    ctx.arc(
-                        this.graph_mouse[0],
-                        this.graph_mouse[1],
-                        4,
-                        0,
-                        Math.PI * 2
-                    );
+                    // ctx.arc(
+                    //     this.connecting_pos[0],
+                    //     this.connecting_pos[1],
+                    //     4,
+                    //     0,
+                    //     Math.PI * 2
+                    // );
+	                // ctx.fill();
+					// ctx.beginPath();
+                    // ctx.arc(
+                    //     this.graph_mouse[0],
+                    //     this.graph_mouse[1],
+                    //     4,
+                    //     0,
+                    //     Math.PI * 2
+                    // );
                 }
                 ctx.fill();
 
-                ctx.fillStyle = "#ffcc00";
+                ctx.fillStyle = "#4f7fff"; // &&&&
                 if (this._highlight_input) {
                     ctx.beginPath();
-                    var shape = this._highlight_input_slot.shape;
-                    if (shape === LiteGraph.ARROW_SHAPE) {
-                        ctx.moveTo(this._highlight_input[0] + 8, this._highlight_input[1] + 0.5);
-                        ctx.lineTo(this._highlight_input[0] - 4, this._highlight_input[1] + 6 + 0.5);
-                        ctx.lineTo(this._highlight_input[0] - 4, this._highlight_input[1] - 6 + 0.5);
-                        ctx.closePath();
-                    } else {
-                        ctx.arc(
-                            this._highlight_input[0],
-                            this._highlight_input[1],
-                            6,
-                            0,
-                            Math.PI * 2
-                        );
-                    }
+                    ctx.arc(
+                        this._highlight_input[0],
+                        this._highlight_input[1],
+                        4,
+                        0,
+                        Math.PI * 2
+                    );
                     ctx.fill();
                 }
+
                 if (this._highlight_output) {
                     ctx.beginPath();
                     if (shape === LiteGraph.ARROW_SHAPE) {
@@ -9002,9 +8993,11 @@ LGraphNode.prototype.executeAction = function(action)
         mouse_over
     ) {
 
-        // ctx.strokeStyle = '#00F';
-        // ctx.strokeRect(0, 0, size[0], size[1]);
-
+        if (LiteGraph.SHOW_GRAPH_BOUNDS) {
+            ctx.strokeStyle = '#00F';
+            ctx.strokeRect(0, 0, size[0], size[1]);
+        }
+        
         return;
         //bg rect
         ctx.strokeStyle = fgcolor;
@@ -9477,16 +9470,16 @@ LGraphNode.prototype.executeAction = function(action)
             this.visible_links.push(link);
         }
 
-        //choose color
-        if (!color && link) {
-            color = link.color || LGraphCanvas.link_type_colors[link.type];
-        }
-        if (!color) {
-            color = this.default_link_color;
-        }
-        if (link != null && this.highlighted_links[link.id]) {
-            color = "#FFF";
-        }
+        // //choose color
+        // if (!color && link) {
+        //     color = link.color || LGraphCanvas.link_type_colors[link.type];
+        // }
+        // if (!color) {
+        //     color = this.default_link_color;
+        // }
+        // if (link != null && this.highlighted_links[link.id]) {
+        //     color = "#FFF";
+        // }
 
         start_dir = start_dir || LiteGraph.RIGHT;
         end_dir = end_dir || LiteGraph.LEFT;
