@@ -33,7 +33,7 @@ base.draggableAnchor = function (parent, ox, oy, x, y, moved) {
             const lockedX = Math.sin(-ang) * lockedDist + ox;
             const lockedY = Math.cos(ang) * lockedDist + oy;
             
-            console.log(lockedX, lockedY)
+            // console.log(lockedX, lockedY)
 
             handler.move(lockedX - 8, lockedY - 8);
             moved(lockedX, lockedY);
@@ -176,11 +176,18 @@ function createAnchorNumber(parent) {
 LiteGraph.registerNodeType("custom/number", DOM_NODE.new(
     [16, 32],
     function(elm) {
-        elm.properties = { value: 0 };
+        // elm.properties = { value: 0 };
+        this.properties = { precision: 0.01 };
+        let anchorValue = 0;
+        const anchornumber = createAnchorNumber(elm.container);
+        elm.addOutput("val_output", "number");
+        anchornumber.onupdate = function (val) {
+            anchorValue = Math.floor(val * 1000) / 1000;
+            handleWorkflowChange();
+        }
 
-        createAnchorNumber(elm.container);
-
-        // elm.addInput("input1", "number");
-        elm.addOutput("output", "number");
+        elm.onExecute = function() {
+            this.setOutputData(0, anchorValue);
+        }
     }
 ));

@@ -34,3 +34,18 @@ body, html {
     height: 100vh;
     z-index: -1;
 }
+
+#result {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    width: 256px;
+    height: 256px;
+    border: solid 1px white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
