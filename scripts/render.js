@@ -26,17 +26,22 @@ function render(f) {
 function handleWorkflowChange() {
     render((i, x, y) => {
 
-        input_index.properties.value = i; // ('output', i);
-        input_index.onExecute();
+        // input_index.properties.value = i; // ('output', i);
+        // input_index.onExecute();
+        
+        nodes_input.setValue('Index', i+1);
+        nodes_input.setValue('Vertical pos.', y+1);
+        nodes_input.setValue('Horizontal pos.', x+1);
+        
         graph.runStep();
         
         return {
-            offset: { x: 0, y: 0 },
+            offset: { x: nodes_output.getValue('Horizontal offset') || 0, y: nodes_output.getValue('Vertical offset') || 0 },
             col: 'red',
             show: true,
             size: {
-                w: output_size.getInputData(0) || 1, // Add fallback
-                h: output_size.getInputData(0) || 1
+                w: nodes_output.getValue('Width') || 1, // Add fallback
+                h: nodes_output.getValue('Height') || 1
             }
         }
     })

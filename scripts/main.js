@@ -1,50 +1,58 @@
 // import TOOLBAR from './toolbar.js';
 
-// // Register the node
-// LiteGraph.registerNodeType("custom/dom_node", CustomDOMNode);
+class staticNodes {
+    constructor(type, list) {
+        this.type = type;
+        this.list = list;
+        this.nodes = {};
+        this.list.forEach(node => {
+            this.add(node.name, node.x, node.y);
+        })
+    }
 
+    add(name, x, y) {
+        const n = LiteGraph.createNode(this.type);
+        n.pos = [x, y];
+        n.setName(name);
+        graph.add(n);
+        this.nodes[name] = n;
+    }
 
-// var node_const = LiteGraph.createNode("basic/const");
-// node_const.pos = [200,200];
-// graph.add(node_const);
-// node_const.setValue(4.5);
+    getValue(name) {
+        return this.nodes[name].getInputData(0);
+    }
 
-// var node_watch = LiteGraph.createNode("basic/watch");
-// node_watch.pos = [700,200];
-// graph.add(node_watch);
+    setValue(name, value) {
+        this.nodes[name].properties.value = value;
+        this.nodes[name].onExecute();
+    }
+}
 
-// node_const.connect(0, node_watch, 0);
+const nodes_input = new staticNodes("custom/input", [
+    { name: "Index", x: 200, y: 300 },
+    { name: "Vertical pos.", x: 200, y: 350 },
+    { name: "Horizontal pos.", x: 200, y: 400 }
+]);
 
-// // Add to your existing code after graph creation:
-// var custom_node = LiteGraph.createNode("custom/dom_node");
-// custom_node.pos = [400, 300];
-// graph.add(custom_node);
+const nodes_output = new staticNodes("custom/output", [
+    { name: "Vertical offset", x: 700, y: 300 },
+    { name: "Horizontal offset", x: 700, y: 350 },
+    
+    { name: "Width", x: 700, y: 400 },
+    { name: "Height", x: 700, y: 450 },
 
-// // Connect it to existing nodes
-// node_const.connect(0, custom_node, 0);
-// custom_node.connect(0, node_watch, 0);
+    { name: "Color", x: 700, y: 500 }
+]);
 
-// var node_number = LiteGraph.createNode("custom/number");
-// node_number.pos = [400, 300];
-// graph.add(node_number);
+// var input_index = LiteGraph.createNode("custom/input");
+// input_index.pos = [200, 300];
+// input_index.setName("index");
+// graph.add(input_index);
 
-// var node_operator = LiteGraph.createNode("custom/operator");
-// node_operator.pos = [500, 300];
-// graph.add(node_operator);
-
-// var node_debug = LiteGraph.createNode("custom/debug_display");
-// node_debug.pos = [600, 300];
-// graph.add(node_debug);
-
-var input_index = LiteGraph.createNode("custom/input");
-input_index.pos = [200, 300];
-input_index.setName("index");
-graph.add(input_index);
-
-var output_size = LiteGraph.createNode("custom/output");
-output_size.pos = [700, 300];
-output_size.setName("size");
-graph.add(output_size);
+// var output_size = LiteGraph.createNode("custom/output");
+// output_size.pos = [700, 300];
+// output_size.setName("size");
+// graph.add(output_size);
 
 graph.start();
 

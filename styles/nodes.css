@@ -66,3 +66,15 @@ svg {
     align-items: center;
     justify-content: center;
 }
+
+/* Input or outpu */
+
+.input-output {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--box-color);
+    border: solid 1px var(--guides-color);
+    border-radius: 8px;
+    pointer-events: none;
+}

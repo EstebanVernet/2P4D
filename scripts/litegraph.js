@@ -5948,6 +5948,11 @@ LGraphNode.prototype.executeAction = function(action)
 		//left button mouse / single finger
         if (e.which == 1 && !this.pointer_is_double)
 		{
+            if (TOOLBAR.selected != "Selector") {
+                return;
+            }
+
+
             if (TOOLBAR.selected == "Selector" && !node)
 			{
                 this.dragging_rectangle = new Float32Array(4);
@@ -5959,25 +5964,25 @@ LGraphNode.prototype.executeAction = function(action)
             }
 
             // clone node ALT dragging
-            if (LiteGraph.alt_drag_do_clone_nodes && e.altKey && node && this.allow_interaction && !skip_action && !this.read_only)
-            {
-                if (cloned = node.clone()){
-                    cloned.pos[0] += 5;
-                    cloned.pos[1] += 5;
-                    this.graph.add(cloned,false,{doCalcSize: false});
-                    node = cloned;
-                    skip_action = true;
-                    if (!block_drag_node) {
-                        if (this.allow_dragnodes) {
-							this.graph.beforeChange();
-                            this.node_dragged = node;
-                        }
-                        if (!this.selected_nodes[node.id]) {
-                            this.processNodeSelected(node, e);
-                        }
-                    }
-                }
-            }
+            // if (LiteGraph.alt_drag_do_clone_nodes && e.altKey && node && this.allow_interaction && !skip_action && !this.read_only)
+            // {
+            //     if (cloned = node.clone()){
+            //         cloned.pos[0] += 5;
+            //         cloned.pos[1] += 5;
+            //         this.graph.add(cloned,false,{doCalcSize: false});
+            //         node = cloned;
+            //         skip_action = true;
+            //         if (!block_drag_node) {
+            //             if (this.allow_dragnodes) {
+			// 				this.graph.beforeChange();
+            //                 this.node_dragged = node;
+            //             }
+            //             if (!this.selected_nodes[node.id]) {
+            //                 this.processNodeSelected(node, e);
+            //             }
+            //         }
+            //     }
+            // }
             
             var clicking_canvas_bg = false;
 
@@ -6136,11 +6141,11 @@ LGraphNode.prototype.executeAction = function(action)
 					var pos = [e.canvasX - node.pos[0], e.canvasY - node.pos[1]];
 
                     //widgets
-                    var widget = this.processNodeWidgets( node, this.graph_mouse, e );
-                    if (widget) {
-                        block_drag_node = true;
-                        this.node_widget = [node, widget];
-                    }
+                    // var widget = this.processNodeWidgets( node, this.graph_mouse, e );
+                    // if (widget) {
+                    //     block_drag_node = true;
+                    //     this.node_widget = [node, widget];
+                    // }
 
                     //double clicking
                     // if (this.allow_interaction && is_double_click && this.selected_nodes[node.id]) {
@@ -6172,20 +6177,13 @@ LGraphNode.prototype.executeAction = function(action)
 	                        block_drag_node = true;
 						}
                     }
-
-                    if (!block_drag_node) {
-                        if (this.allow_dragnodes) {
-							this.graph.beforeChange();
-                            this.node_dragged = node;
-                        }
-                        this.processNodeSelected(node, e);
-                    } else { // double-click
-                        /**
-                         * Don't call the function if the block is already selected.
-                         * Otherwise, it could cause the block to be unselected while its panel is open.
-                         */
-                        if (!node.is_selected) this.processNodeSelected(node, e);
+                    
+                    if (this.allow_dragnodes) {
+                        this.graph.beforeChange();
+                        if (!this.selected_nodes[node.id]) this.selectNodes([node]);
+                        this.node_dragged = node;
                     }
+                    this.processNodeSelected(node, e);
 
                     this.dirty_canvas = true;
                 }

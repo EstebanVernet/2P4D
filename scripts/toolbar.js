@@ -18,12 +18,14 @@ TOOLBAR.show = (bool, desc=false) => {
 
 TOOLBAR.equip = (toolName) => {
     TOOLBAR.selected = toolName;
+    document.documentElement.style.setProperty('--cursor', `url("../assets/icons/${TOOLBAR.tools[toolName].icon}.svg") 0 0, auto`);
     TOOLBAR.tools[toolName].onequip();
 }
 
 TOOLBAR.append = (name, description, icon, onequip) => {
     const tool = document.createElement('img');
     tool.classList.add('tool');
+    tool.icon = icon;
     tool.src = './assets/icons/' + icon + '.svg';
     tool.alt = name;
     tool.toolname = name;
