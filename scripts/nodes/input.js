@@ -7,6 +7,11 @@ LiteGraph.registerNodeType("custom/input", DOM_NODE.new(
         elm.setName = (inputName) => {
             elm.inputName = inputName;
             elm.container.innerHTML = inputName;
+            elm.properties = {name: inputName};
+        }
+        
+        elm.onConfigure = () => {
+            elm.setName(elm.properties.name);
         }
     }
 ));

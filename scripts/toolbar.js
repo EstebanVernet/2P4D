@@ -1,6 +1,6 @@
 const TOOLBAR = {};
 
-TOOLBAR.bar = document.getElementById('toolbar');
+TOOLBAR.bar = document.querySelector('#toolbar .tools');
 TOOLBAR.tooltip = document.getElementById('toolbar_tooltip');
 
 TOOLBAR.tools = {};

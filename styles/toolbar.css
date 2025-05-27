@@ -4,8 +4,14 @@
     top: 0;
     width: fit-content;
     height: fit-content;
+
+    display: flex;
+    flex-direction: column;
     padding: 8px;
 
+}
+
+#toolbar .tools, #toolbar .others {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
@@ -44,4 +50,13 @@
 #toolbar_tooltip .title {
     font-size: 16px;
     font-weight: bold;
+}
+
+#toolbar hr {
+    width: 100%;
+    opacity: 0.5;
+}
+
+#toolbar .others img {
+    cursor: pointer;
 }

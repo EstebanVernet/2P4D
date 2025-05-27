@@ -2,7 +2,8 @@ let hsl2hsv = (h,s,l,v=s*Math.min(l,1-l)+l) => [h, v?2-2*l/v:0, v];
 
 let hsv2hsl = (h,s,v,l=v-v*s/2, m=Math.min(l,1-l)) => [h,m?(v-l)/m:0,l];
 
-function createColorDOMNode(parent) {
+function createColorDOMNode(node, parent) {
+
     const tem_box = document.getElementById("tem-box-color")
     const clone = tem_box.content.cloneNode(true)
 
@@ -25,10 +26,9 @@ function createColorDOMNode(parent) {
         return this.map(y, 128, 0, 0, 100);
     }
 
-    const setSV = (x, y) => {
-        const bounds = sv.getBoundingClientRect();
-        x -= bounds.left;
-        y -= bounds.top;
+    this.setSV = (x, y) => {
+        node.properties.saturationPos = x;
+        node.properties.valuePos = y;
 
         if (x < 0) x = 0;
         if (x > 128) x = 128;
@@ -45,10 +45,11 @@ function createColorDOMNode(parent) {
 
     let mousedown_sv = false;
 
-    sv.onmousedown = function(e) {
+    sv.onmousedown = (e) => {
         e.preventDefault();
         mousedown_sv = true;
-        setSV(e.clientX, e.clientY);
+        const bounds = sv.getBoundingClientRect();
+        this.setSV(e.clientX - bounds.left, e.clientY - bounds.top);
     }
 
     const h = clone.querySelector(".h")
@@ -56,10 +57,8 @@ function createColorDOMNode(parent) {
 
     let mousedown_h = false;
 
-    const setH = (y) => {
-        const bounds = h.getBoundingClientRect();
-        y -= bounds.top;
-
+    this.setH = (y) => {
+        node.properties.huePos = y;
         if (y < 0) y = 0;
         if (y > 128) y = 128;
 
@@ -71,24 +70,27 @@ function createColorDOMNode(parent) {
         this.updated();
     }
 
-    h.onmousedown = function(e) {
+    h.onmousedown = (e) => {
         e.preventDefault();
         mousedown_h = true;
-        setH(e.clientY);
+        const bounds = h.getBoundingClientRect();
+        this.setH(e.clientY - bounds.top);
     }
 
-    document.addEventListener("mousemove", function(e) {
+    document.addEventListener("mousemove", (e) => {
         if (mousedown_sv) {
             e.preventDefault();
-            setSV(e.clientX, e.clientY);
+            const bounds = sv.getBoundingClientRect();
+            this.setSV(e.clientX - bounds.left, e.clientY - bounds.top);
         }
         if (mousedown_h) {
+            const bounds = h.getBoundingClientRect();
             e.preventDefault();
-            setH(e.clientY);
+            this.setH(e.clientY - bounds.top);
         }
     });
 
-    document.addEventListener("mouseup", function(e) {
+    document.addEventListener("mouseup", (e) => {
         if (mousedown_sv) {
             e.preventDefault();
             mousedown_sv = false;
@@ -105,8 +107,15 @@ function createColorDOMNode(parent) {
 LiteGraph.registerNodeType("custom/color", DOM_NODE.new(
     [128 + 8 + 32 + 16 + 8, 128],
     function(elm) {
+
+        elm.properties = {
+            hue: 0,
+            saturation: 0,
+            value: 100
+        }
+
         elm.container.classList.add("node-color");
-        const col = new createColorDOMNode(elm.container)
+        const col = new createColorDOMNode(elm, elm.container)
 
         // elm.addInput("hue", "number");
         // elm.addInput("saturation", "number");
@@ -117,20 +126,32 @@ LiteGraph.registerNodeType("custom/color", DOM_NODE.new(
         elm.addOutput("value", "number");
 
         elm.onExecute = function() {
+            // console.log(col.hue, col.saturation, col.value);
             const newCol = hsv2hsl(col.hue, col.saturation / 100, col.value / 100);
 
             const hue = newCol[0];
             const saturation = newCol[1] * 100;
             const value = newCol[2] * 100;
             
-            console.log(hue, saturation, value);
+            // console.log(hue, saturation, value);
             this.setOutputData(0, hue);
             this.setOutputData(1, saturation);
             this.setOutputData(2, value);
         }
 
         col.updated = () => {
-            elm.onPropertyChanged();
+            elm.properties.hue = col.hue;
+            elm.properties.saturation = col.saturation;
+            elm.properties.value = col.value;
+            elm.graph.onNodePropertyChanged();
+        }
+
+        elm.onConfigure = () => {
+
+            col.setH(elm.properties.huePos);
+            col.setSV(elm.properties.saturationPos, elm.properties.valuePos);
+            
+            col.updated();
         }
     }
 ));

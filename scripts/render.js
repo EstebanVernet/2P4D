@@ -30,8 +30,8 @@ function handleWorkflowChange() {
         // input_index.onExecute();
         
         nodes_input.setValue('Index', i);
-        nodes_input.setValue('Vertical pos.', y);
-        nodes_input.setValue('Horizontal pos.', x);
+        nodes_input.setValue('Vertical pos.', (y + .5) / 16);
+        nodes_input.setValue('Horizontal pos.', (x + .5) / 16);
         
         graph.runStep();
         

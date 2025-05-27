@@ -33,7 +33,7 @@ base.draggableAnchor = function (parent, ox, oy, x, y, moved) {
             const lockedX = Math.sin(-ang) * lockedDist + ox;
             const lockedY = Math.cos(ang) * lockedDist + oy;
             
-            handler.move(lockedX - 8, lockedY - 8);
+            handler.move(lockedX - 4, lockedY - 4);
             moved(lockedX, lockedY);
         } else {
             lockedDist = Math.sqrt(Math.pow(e.detail.box.cx - ox, 2) + Math.pow(e.detail.box.cy - oy, 2));
@@ -67,7 +67,7 @@ base.line = function (parent, x1, y1, x2, y2) {
 
 const instances = {};
 
-instances.anchorNumber = function (parent, cx, cy) {
+instances.anchorNumber = function (node, parent, cx, cy) {
     this.onupdate = () => {};
 
     this.data = {
@@ -118,6 +118,18 @@ instances.anchorNumber = function (parent, cx, cy) {
     parent.rect(8, 8)
     .center(cx, cy)
     .attr({ class: 'anchor no-pointer-events' })
+
+    this.updateObject = (dat) => {
+        this.data = dat;
+        line1.update(cx, cy, this.data.ax1, this.data.ay1);
+        line2.update(cx, cy, this.data.ax2, this.data.ay2);
+        anchor1.update(this.data.ax1, this.data.ay1);
+        anchor2.update(this.data.ax2, this.data.ay2);
+
+        const val = compute(this.data);
+        this.onupdate(val);
+    }
+
 }
 
 const distance = function (x1, y1, x2, y2) {
@@ -149,9 +161,9 @@ function compute(data) {
     return VALUE;
 }
 
-function createAnchorNumber(parent) {
+function createAnchorNumber(node, parent) {
     const svgElement = SVG().addTo(parent).size(16, 32);
-    const elm = new instances.anchorNumber(svgElement, 8, 16);
+    const elm = new instances.anchorNumber(node, svgElement, 8, 16);
     return elm;
 }
 
@@ -174,17 +186,23 @@ LiteGraph.registerNodeType("custom/number", DOM_NODE.new(
     [16, 32],
     function(elm) {
         // elm.properties = { value: 0 };
-        this.properties = { precision: 0.01 };
+        this.properties = { value: 0 };
         let anchorValue = 0;
-        const anchornumber = createAnchorNumber(elm.container);
+        const anchornumber = createAnchorNumber(elm, elm.container);
         elm.addOutput("val_output", "number");
-        anchornumber.onupdate = function (val) {
+        anchornumber.onupdate = (val) => {
             anchorValue = Math.floor(val * 1000) / 1000;
-            handleWorkflowChange();
+            // this.properties.value = anchorValue;
+            this.properties = anchornumber.data;
+            elm.graph.onNodePropertyChanged();
         }
 
         elm.onExecute = function() {
             this.setOutputData(0, anchorValue);
+        }
+
+        elm.onConfigure = () => {
+            anchornumber.updateObject(this.properties);
         }
     }
 ));

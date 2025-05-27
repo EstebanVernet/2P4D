@@ -101,9 +101,10 @@ return 3 * u * u * x1 + 6 * u * t * (x2 - x1) + 3 * t * t * (1 - x2);
 }
 
 bezierfunc.create = function(parent) {
+    this.onupdate = () => {};
     const svgElement = SVG().addTo(parent).size(128, 128);
 
-    let data = {
+    this.data = {
         p0: { x: 0, y: 0 },
         p1: { x: 32, y: 32 },
         p2: { x: 128-32, y: 128-32 },
@@ -111,14 +112,22 @@ bezierfunc.create = function(parent) {
     }
 
     this.updateObject = () => {
-        line0.update(data.p0.x, data.p0.y, data.p1.x, data.p1.y);
-        line1.update(data.p2.x, data.p2.y, data.p3.x, data.p3.y);
+        line0.update(this.data.p0.x, this.data.p0.y, this.data.p1.x, this.data.p1.y);
+        line1.update(this.data.p2.x, this.data.p2.y, this.data.p3.x, this.data.p3.y);
 
-        curve.update(data.p0.x, data.p0.y, data.p1.x, data.p1.y, data.p2.x, data.p2.y, data.p3.x, data.p3.y);
+        curve.update(this.data.p0.x, this.data.p0.y, this.data.p1.x, this.data.p1.y, this.data.p2.x, this.data.p2.y, this.data.p3.x, this.data.p3.y);
+        this.onupdate();
+    }
+
+    this.updateAnchors = () => {
+        p0.update(this.data.p0.x, this.data.p0.y);
+        p1.update(this.data.p1.x, this.data.p1.y);
+        p2.update(this.data.p2.x, this.data.p2.y);
+        p3.update(this.data.p3.x, this.data.p3.y);
     }
 
     this.computeFromBezier = (x) => {
-        return bezierfunc.compute(data.p0, data.p1, data.p2, data.p3, x);
+        return bezierfunc.compute(this.data.p0, this.data.p1, this.data.p2, this.data.p3, x);
     }
 
     const line0 = new bezierfunc.line(svgElement, 0, 0, 0, 0);
@@ -127,23 +136,23 @@ bezierfunc.create = function(parent) {
     const curve = new bezierfunc.beziercurve(svgElement, 0, 0, 0, 0, 0, 0, 0, 0);
 
     const p0 = new bezierfunc.draggableAnchor('rect', svgElement, 0, 0, 0, 0, 0, 128, (x, y) => {
-        data.p0.x = x;
-        data.p0.y = y;
+        this.data.p0.x = x;
+        this.data.p0.y = y;
         this.updateObject();
     });
     const p1 = new bezierfunc.draggableAnchor('ellipse', svgElement, 32, 32, 0, -64, 128, 128 + 64, (x, y) => {
-        data.p1.x = x;
-        data.p1.y = y;
+        this.data.p1.x = x;
+        this.data.p1.y = y;
         this.updateObject();
     });
     const p2 = new bezierfunc.draggableAnchor('ellipse', svgElement, 128-32, 128-32, 0, -64, 128, 128 + 64, (x, y) => {
-        data.p2.x = x;
-        data.p2.y = y;
+        this.data.p2.x = x;
+        this.data.p2.y = y;
         this.updateObject();
     });
     const p3 = new bezierfunc.draggableAnchor('rect', svgElement, 128, 128, 128, 0, 128, 128, (x, y) => {
-        data.p3.x = x;
-        data.p3.y = y;
+        this.data.p3.x = x;
+        this.data.p3.y = y;
         this.updateObject();
     });
 
@@ -153,25 +162,38 @@ bezierfunc.create = function(parent) {
 LiteGraph.registerNodeType("custom/bezierfunc", DOM_NODE.new(
     [128, 128],
     function(elm) {
-        // elm.properties = { value: 0 };
+
+        elm.properties = {
+            p0: { x: 0, y: 0 },
+            p1: { x: 32, y: 32 },
+            p2: { x: 128-32, y: 128-32 },
+            p3: { x: 128, y: 128 },
+        };
+
         // this.properties = { precision: 0.01 };
         // let anchorValue = 0;
         elm.container.classList.add("bezierfunc");
         const curve = new bezierfunc.create(elm.container);
-
+        curve.onupdate = () => {
+            elm.properties = curve.data;
+            if (elm.graph) {
+                elm.graph.onNodePropertyChanged();
+            }
+        }
 
         elm.addInput("val_input", "number");
         elm.addOutput("val_output", "number");
         
-        // anchornumber.onupdate = function (val) {
-        //     anchorValue = Math.floor(val * 1000) / 1000;
-        //     handleWorkflowChange();
-        // }
-
         elm.onExecute = () => {
             const x = this.getInputData(0);
             const res = curve.computeFromBezier(x);
             elm.setOutputData(0, res);
+        }
+
+        elm.onConfigure = () => {
+            curve.data = elm.properties;
+            curve.updateObject();
+            curve.updateAnchors();
         }
     }
 ));

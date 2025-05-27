@@ -26,6 +26,14 @@ class staticNodes {
         this.nodes[name].properties.value = value;
         this.nodes[name].onExecute();
     }
+
+    graphUpdated() {
+        graph._nodes.forEach(node => {
+            if (node.type === this.type) {
+                this.nodes[node.properties.name] = node;
+            }
+        })
+    }
 }
 
 const nodes_input = new staticNodes("custom/input", [
@@ -60,3 +68,68 @@ graph.onNodeAdded = handleWorkflowChange
 graph.onNodeRemoved = handleWorkflowChange
 graph.onConnectionChange = handleWorkflowChange
 graph.onNodePropertyChanged = handleWorkflowChange
+
+const btn_save = document.getElementById("save-graph");
+btn_save.addEventListener("click", () => {
+    saveGraphToFile('graph.json');
+});
+
+function saveGraphToFile(filename = 'graph.json') {
+    const graphData = graph.serialize();
+    const graphString = JSON.stringify(graphData);
+    const blob = new Blob([graphString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function loadGraph(graphData) {
+    // Clear existing graph
+    graph.clear();
+    
+    // Configure the graph with loaded data
+    graph.configure(graphData);
+    
+    // Optionally set canvas dirty for redraw
+    if (graphcanvas) {
+        graphcanvas.setDirty(true, true);
+    }
+
+    if (nodes_input) {
+        nodes_input.graphUpdated();
+    }
+    if (nodes_output) {
+        nodes_output.graphUpdated();
+    }
+
+    handleWorkflowChange();
+}
+
+// Load from file input
+function loadGraphFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const graphData = JSON.parse(e.target.result);
+            loadGraph(graphData);
+        } catch (error) {
+            console.error('Error loading graph:', error);
+        }
+    };
+    reader.readAsText(file);
+}
+
+const btn_load = document.getElementById("load-graph");
+btn_load.addEventListener("click", () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        loadGraphFromFile(file);
+    });
+    fileInput.click();
+});

@@ -19,14 +19,14 @@ function createDomOperator(parent, onupdate) {
         clone.classList.toggle('hidden');
     })
 
-    const setIcon = (iconName) => {
+    this.setIcon = (iconName) => {
         icon.src = './assets/operators/' + iconName + '.svg';
         onupdate(iconName);
     }
 
     buttons.forEach(button => {
         button.addEventListener('click', () => {
-            setIcon(button.dataset.operator);
+            this.setIcon(button.dataset.operator);
             clone.classList.add('hidden');
         })
     });
@@ -42,8 +42,9 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
         // const num = createAnchorNumber(elm.container);
 
         let operator_choice = "add";
-        createDomOperator(elm.container, (val) => {
+        const operatorDom = new createDomOperator(elm.container, (val) => {
             operator_choice = val;
+            this.properties.operator = val;
         })
 
         elm.addInput("entry1", "number");
@@ -76,6 +77,10 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
                     break;
             }
             this.setOutputData(0, result);
+        }
+
+        elm.onConfigure = () => {
+            operatorDom.setIcon(elm.properties.operator);
         }
     }
 ));
