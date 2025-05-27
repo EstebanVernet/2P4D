@@ -74,7 +74,102 @@ svg {
     align-items: center;
     justify-content: center;
     background-color: var(--box-color);
-    border: solid 1px var(--guides-color);
-    border-radius: 8px;
     pointer-events: none;
+}
+
+.input {
+    border-right: solid 4px var(--guides-color);
+}
+
+.output {
+    border-left: solid 4px var(--guides-color);
+}
+
+/* Functions */
+
+.bezierfunc {
+    outline: solid 1px var(--box-color);
+}
+
+/* Color node */
+
+.node-color {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.node-color .h {
+    width: 32px;
+    height: 128px;
+    background-image: linear-gradient(0deg,
+    hsl(0, 100%, 50%),
+    hsl(30, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(90, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(150, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(210, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(270, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(330, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
+  background-size: 100% 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+.node-color .sv {
+    --hue: 0deg;
+    width: 128px;
+    height: 128px;
+    background:
+        linear-gradient(to bottom, #00000000 0%, #000000FF 100%),
+        linear-gradient(to right, #FFFFFF 0%, hsl(var(--hue), 100%, 50%) 100%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
+}
+
+.node-color .labels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.node-color .labels div {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-color .color-sv-indicator {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    border-radius: 8px;
+    border: solid 1px white;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    mix-blend-mode: difference;
+}
+
+.node-color .color-h-indicator {
+    width: calc(32px + 8px);
+    height: 8px;
+    left: -4px;
+    position: absolute;
+    border: solid 1px white;
+    transform-origin: center;
+    transform: translateY(-50%);
+    pointer-events: none;
+    mix-blend-mode: difference;
 }

@@ -23,9 +23,26 @@
         </div>
     </template>
 
+    <template id="tem-box-color">
+        <div class="sv">
+            <div class="color-sv-indicator"></div>
+        </div>
+        <div class="h">
+            <div class="color-h-indicator"></div>
+        </div>
+        <div class="labels">
+            <div>H</div>
+            <div>S</div>
+            <div>B</div>
+        </div>
+    </template>
+
     <!-- Body -->
     <div id="toolbar" class="box">
-        <div id="toolbar_tooltip"></div>
+        <div id="toolbar_tooltip">
+            <div class="title"></div>
+            <div class="description"></div>
+        </div>
     </div>
 
     <div id="result"></div>
@@ -42,6 +59,8 @@
     <script src="./scripts/nodes/debug_display.js"></script>
     <script src="./scripts/nodes/input.js"></script>
     <script src="./scripts/nodes/output.js"></script>
+    <script src="./scripts/nodes/bezier_func.js"></script>
+    <script src="./scripts/nodes/color.js"></script>
 
     <script src="./scripts/render.js"></script>
     <script src="./scripts/main.js"></script>

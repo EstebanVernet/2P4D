@@ -14,6 +14,17 @@ body, html {
     cursor: var(--cursor);
 }
 
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+body * {
+    pointer-events: all;
+}
+
 :root {
     --box-top-color: #444444;
     --box-color: #545454;

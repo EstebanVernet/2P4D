@@ -12,3 +12,8 @@
 .no-pointer-events {
     pointer-events: none !important;
 }
+
+.beziercurve {
+    fill: none;
+    stroke: #4FD9FF;
+}

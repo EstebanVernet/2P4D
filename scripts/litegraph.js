@@ -6006,10 +6006,10 @@ LGraphNode.prototype.executeAction = function(action)
                             10
                         )
                     ) {
-						this.graph.beforeChange();
-                        this.resizing_node = node;
-                        this.canvas.style.cursor = "se-resize";
-                        skip_action = true;
+						// this.graph.beforeChange();
+                        // this.resizing_node = node;
+                        // this.canvas.style.cursor = "se-resize";
+                        // skip_action = true;
                     } else {
                         //search for outputs
                         if (node.outputs) {
@@ -6493,10 +6493,17 @@ LGraphNode.prototype.executeAction = function(action)
                     node.onMouseMove( e, [e.canvasX - node.pos[0], e.canvasY - node.pos[1]], this );
                 }
 
+                var over_link = this.isOverNodeInput( node, e.canvasX, e.canvasY, pos ) != -1 || this.isOverNodeOutput( node, e.canvasX, e.canvasY, pos ) != -1;
+                if (over_link) {
+                    this.canvas.style.cursor = 'crosshair'
+                } else {
+                    this.canvas.style.cursor = ''
+                }
+
                 //if dragging a link
                 if (this.connecting_node) {
                     
-                    if (this.connecting_output){
+                    if (this.connecting_output) {
                         
                         var pos = this._highlight_input || [0, 0]; //to store the output of isOverNodeInput
 
@@ -6521,7 +6528,7 @@ LGraphNode.prototype.executeAction = function(action)
                         }
                         
                     }else if(this.connecting_input){
-                        
+
                         var pos = this._highlight_output || [0, 0]; //to store the output of isOverNodeOutput
 
                         //on top of output
@@ -6554,9 +6561,9 @@ LGraphNode.prototype.executeAction = function(action)
                             5
                         )
                     ) {
-                        this.canvas.style.cursor = "se-resize";
+                        // this.canvas.style.cursor = "se-resize";
                     } else {
-                        this.canvas.style.cursor = "grab";
+                        // this.canvas.style.cursor = "grab";
                     }
                 }
             } else { //not over a node
@@ -6658,6 +6665,10 @@ LGraphNode.prototype.executeAction = function(action)
         var window = this.getCanvasWindow();
         var document = window.document;
         LGraphCanvas.active_canvas = this;
+
+        if (TOOLBAR.selected == 'Hand') {
+            document.documentElement.style.setProperty('--cursor', `url("../assets/icons/hand.svg") 0 0, auto`);
+        }
 
         //restore the mousemove event back to the canvas
 		if(!this.options.skip_events)
@@ -6938,7 +6949,7 @@ LGraphNode.prototype.executeAction = function(action)
         this.graph.change();
 
         //console.log("pointerevents: processMouseUp stopPropagation");
-        e.stopPropagation();
+        // e.stopPropagation();
         e.preventDefault();
         return false;
     };
@@ -7745,13 +7756,13 @@ LGraphNode.prototype.executeAction = function(action)
             var n = nodes[i];
 
             //skip rendering nodes in live mode
-            if (this.live_mode && !n.onDrawBackground && !n.onDrawForeground) {
-                continue;
-            }
+            // if (this.live_mode && !n.onDrawBackground && !n.onDrawForeground) {
+            //     continue;
+            // }
 
-            if (!overlapBounding(this.visible_area, n.getBounding(temp, true))) {
-                continue;
-            } //out of the visible area
+            // if (!overlapBounding(this.visible_area, n.getBounding(temp, true))) {
+            //     continue;
+            // } //out of the visible area
 
             visible_nodes.push(n);
         }
@@ -8989,8 +9000,9 @@ LGraphNode.prototype.executeAction = function(action)
     ) {
 
         if (LiteGraph.SHOW_GRAPH_BOUNDS || selected) {
+            const margin = 4;
             ctx.strokeStyle = LiteGraph.CONNEXION_COLOR;
-            ctx.strokeRect(0, 0, size[0], size[1]);
+            ctx.strokeRect(-margin, -margin, size[0]+margin*2, size[1]+margin*2);
         }
         
         return;

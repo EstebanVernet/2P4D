@@ -31,8 +31,17 @@
     padding: 8px;
     visibility: hidden;
     pointer-events: none;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 #toolbar_tooltip.visible {
     visibility: visible;
+}
+
+#toolbar_tooltip .title {
+    font-size: 16px;
+    font-weight: bold;
 }

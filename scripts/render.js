@@ -12,7 +12,7 @@ function render(f) {
             const { offset={x:0, y:0}, col='black', show=true, size={w: 1, h: 1} } = f(i, x, y);
             const params = {
                 x: width/16*x + width/16/2 + offset.x,
-                y: height/16*y + height/16/2 + offset.x,
+                y: height/16*y + height/16/2 + offset.y,
                 w: width/16 * size.w,
                 h: height/16 * size.h
             }
@@ -29,15 +29,15 @@ function handleWorkflowChange() {
         // input_index.properties.value = i; // ('output', i);
         // input_index.onExecute();
         
-        nodes_input.setValue('Index', i+1);
-        nodes_input.setValue('Vertical pos.', y+1);
-        nodes_input.setValue('Horizontal pos.', x+1);
+        nodes_input.setValue('Index', i);
+        nodes_input.setValue('Vertical pos.', y);
+        nodes_input.setValue('Horizontal pos.', x);
         
         graph.runStep();
         
         return {
             offset: { x: nodes_output.getValue('Horizontal offset') || 0, y: nodes_output.getValue('Vertical offset') || 0 },
-            col: 'red',
+            col: 'hsl(' + nodes_output.getValue('Hue') + ', ' + nodes_output.getValue('Saturation') + '%, ' + nodes_output.getValue('Value') + '%)',
             show: true,
             size: {
                 w: nodes_output.getValue('Width') || 1, // Add fallback

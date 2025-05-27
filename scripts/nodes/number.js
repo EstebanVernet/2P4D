@@ -33,11 +33,8 @@ base.draggableAnchor = function (parent, ox, oy, x, y, moved) {
             const lockedX = Math.sin(-ang) * lockedDist + ox;
             const lockedY = Math.cos(ang) * lockedDist + oy;
             
-            // console.log(lockedX, lockedY)
-
             handler.move(lockedX - 8, lockedY - 8);
             moved(lockedX, lockedY);
-
         } else {
             lockedDist = Math.sqrt(Math.pow(e.detail.box.cx - ox, 2) + Math.pow(e.detail.box.cy - oy, 2));
             moved(e.detail.box.cx, e.detail.box.cy);

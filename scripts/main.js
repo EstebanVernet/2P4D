@@ -29,29 +29,29 @@ class staticNodes {
 }
 
 const nodes_input = new staticNodes("custom/input", [
-    { name: "Index", x: 200, y: 300 },
-    { name: "Vertical pos.", x: 200, y: 350 },
-    { name: "Horizontal pos.", x: 200, y: 400 }
+    { name: "Index", x: 50, y: 150 },
+    { name: "Vertical pos.", x: 50, y: 200 },
+    { name: "Horizontal pos.", x: 50, y: 250 }
 ]);
 
 const nodes_output = new staticNodes("custom/output", [
-    { name: "Vertical offset", x: 700, y: 300 },
-    { name: "Horizontal offset", x: 700, y: 350 },
+    { name: "Vertical offset", x: 950, y: 150 },
+    { name: "Horizontal offset", x: 950, y: 200 },
     
-    { name: "Width", x: 700, y: 400 },
-    { name: "Height", x: 700, y: 450 },
+    { name: "Width", x: 950, y: 300 },
+    { name: "Height", x: 950, y: 350 },
 
-    { name: "Color", x: 700, y: 500 }
+    { name: "Hue", x: 950, y: 450 },
+    { name: "Saturation", x: 950, y: 500 },
+    { name: "Value", x: 950, y: 550 },
 ]);
 
-// var input_index = LiteGraph.createNode("custom/input");
+// var input_index = LiteGraph.createNode("custom/bezierfunc");
 // input_index.pos = [200, 300];
-// input_index.setName("index");
 // graph.add(input_index);
 
-// var output_size = LiteGraph.createNode("custom/output");
-// output_size.pos = [700, 300];
-// output_size.setName("size");
+// var output_size = LiteGraph.createNode("custom/color");
+// output_size.pos = [400, 300];
 // graph.add(output_size);
 
 graph.start();
