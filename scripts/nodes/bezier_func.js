@@ -53,51 +53,57 @@ bezierfunc.beziercurve = function (parent, x1, y1, x2, y2, x3, y3, x4, y4) {
 }
 
 bezierfunc.compute = (p0, p1, p2, p3, x) => {
-    return cubicBezier(p0.y / 128, p0.x / 128, p1.y / 128, p2.x / 128, p2.y / 128, p3.y / 128, x);
+    // return findTForX(p0.y / 128, p0.x / 128, p1.y / 128, p2.x / 128, p2.y / 128, p3.y / 128, x);
+    return bezierEasing(p0, p1, p2, p3, x);
 }
 
-function cubicBezier(startY, x1, y1, x2, y2, endY, x) {
-    if (x < 0) return startY;
-    if (x > 1) return endY;
-    
-    // Use Newton-Raphson method to find t value that gives us the desired x
-    let t = x;
-    
-    for (let i = 0; i < 10; i++) {
-    const currentX = cubicBezierX(t, x1, x2);
-    const diff = currentX - x;
-    
-    if (Math.abs(diff) < 0.0001) break;
-    
-    const derivative = cubicBezierXDerivative(t, x1, x2);
-    if (Math.abs(derivative) < 0.0001) break;
-    
-    t = t - diff / derivative;
-    t = Math.max(0, Math.min(1, t));
+function cubicBezier(t, p0, p1, p2, p3) {
+    const u = 1 - t;
+    return u * u * u * p0 + 
+        3 * u * u * t * p1 + 
+        3 * u * t * t * p2 + 
+        t * t * t * p3;
+}
+
+function findTForX(x, p0, p1, p2, p3, precision = 0.0001) {
+    let tMin = 0;
+    let tMax = 1;
+    let t = x; // Initial guess
+
+    // Binary search to find t where x(t) equals our target x
+    for (let i = 0; i < 50; i++) { // Max 50 iterations
+        const currentX = cubicBezier(t, p0.x / 128, p1.x / 128, p2.x / 128, p3.x / 128);
+        const diff = currentX - x;
+        
+        if (Math.abs(diff) < precision) {
+        break;
+        }
+        
+        if (diff > 0) {
+        tMax = t;
+        } else {
+        tMin = t;
+        }
+        
+        t = (tMin + tMax) / 2;
     }
-    
-    // Calculate y value using the found t
-    return cubicBezierY(t, startY, y1, y2, endY);
+
+    return t;
 }
 
-// Helper function to calculate x coordinate for given t
-function cubicBezierX(t, x1, x2) {
-const u = 1 - t;
-// B(t) = (1-t)³*0 + 3(1-t)²t*x1 + 3(1-t)t²*x2 + t³*1
-return 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t;
-}
+function bezierEasing(p0, p1, p2, p3, x) {
+    // Clamp x to [0, 1] range
+    x = Math.max(0, Math.min(1, x));
 
-// Helper function to calculate y coordinate for given t
-function cubicBezierY(t, startY, y1, y2, endY) {
-const u = 1 - t;
-// B(t) = (1-t)³*startY + 3(1-t)²t*y1 + 3(1-t)t²*y2 + t³*endY
-return u * u * u * startY + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * endY;
-}
+    // Handle edge cases
+    if (x === 0) return p0.y;
+    if (x === 1) return p3.y;
 
-// Helper function for derivative of x with respect to t
-function cubicBezierXDerivative(t, x1, x2) {
-const u = 1 - t;
-return 3 * u * u * x1 + 6 * u * t * (x2 - x1) + 3 * t * t * (1 - x2);
+    // Find the t parameter that corresponds to our x coordinate
+    const t = findTForX(x, p0, p1, p2, p3);
+
+    // Calculate and return the y coordinate at that t
+    return cubicBezier(t, p0.y / 128, p1.y / 128, p2.y / 128, p3.y / 128);
 }
 
 bezierfunc.create = function(parent) {

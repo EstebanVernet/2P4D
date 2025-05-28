@@ -79,9 +79,9 @@ instances.anchorNumber = function (node, parent, cx, cy) {
         ay2: 0
     }
 
-    const line2 = new base.line(parent, cx, cy, cx, cy + 8);
+    const line2 = new base.line(parent, cx, cy, cx, cy + 16);
     line2.secondary();
-    const anchor2 = new base.draggableAnchor(parent, cx, cy, cx, cy + 8, (x, y) => {
+    const anchor2 = new base.draggableAnchor(parent, cx, cy, cx, cy + 16, (x, y) => {
         this.data.ax2 = x;
         this.data.ay2 = y;
         line2.update(cx, cy, x, y);
@@ -92,8 +92,8 @@ instances.anchorNumber = function (node, parent, cx, cy) {
 
     anchor2.secondary();
     
-    const line1 = new base.line(parent, cx, cy, cx, cy + 64);
-    const anchor1 = new base.draggableAnchor(parent, cx, cy, cx, cy + 64, (x, y) => {
+    const line1 = new base.line(parent, cx, cy, cx, cy + 32);
+    const anchor1 = new base.draggableAnchor(parent, cx, cy, cx, cy + 32, (x, y) => {
         const old_angle = Math.atan2(this.data.ay1 - this.data.cy, this.data.ax1 - this.data.cx);
         const new_angle = Math.atan2(y - this.data.cy, x - this.data.cx);
         const diff = new_angle - old_angle;
@@ -129,6 +129,8 @@ instances.anchorNumber = function (node, parent, cx, cy) {
         const val = compute(this.data);
         this.onupdate(val);
     }
+
+    this.onupdate(this.data);
 
 }
 
@@ -203,6 +205,10 @@ LiteGraph.registerNodeType("custom/number", DOM_NODE.new(
 
         elm.onConfigure = () => {
             anchornumber.updateObject(this.properties);
+        }
+
+        elm.onAdded = () => {
+            anchornumber.updateObject(anchornumber.data);
         }
     }
 ));

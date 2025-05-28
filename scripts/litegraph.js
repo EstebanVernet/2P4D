@@ -6494,7 +6494,7 @@ LGraphNode.prototype.executeAction = function(action)
                 }
 
                 var over_link = this.isOverNodeInput( node, e.canvasX, e.canvasY, pos ) != -1 || this.isOverNodeOutput( node, e.canvasX, e.canvasY, pos ) != -1;
-                if (over_link) {
+                if (over_link && TOOLBAR.selected == 'Tweaker') {
                     this.canvas.style.cursor = 'crosshair'
                 } else {
                     this.canvas.style.cursor = ''

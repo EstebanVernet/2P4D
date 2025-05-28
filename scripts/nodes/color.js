@@ -147,11 +147,15 @@ LiteGraph.registerNodeType("custom/color", DOM_NODE.new(
         }
 
         elm.onConfigure = () => {
-
             col.setH(elm.properties.huePos);
             col.setSV(elm.properties.saturationPos, elm.properties.valuePos);
-            
             col.updated();
+        }
+
+        elm.onAdded = () => {
+            col.setH(0);
+            col.setSV(0, 0);
+            col.updated();    
         }
     }
 ));
