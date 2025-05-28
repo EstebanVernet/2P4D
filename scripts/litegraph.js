@@ -5948,7 +5948,7 @@ LGraphNode.prototype.executeAction = function(action)
 		//left button mouse / single finger
         if (e.which == 1 && !this.pointer_is_double)
 		{
-            if (TOOLBAR.selected != "Selector") {
+            if (TOOLBAR.selected != "Selector" && TOOLBAR.selected != "Tweaker") {
                 return;
             }
 
@@ -6012,7 +6012,7 @@ LGraphNode.prototype.executeAction = function(action)
                         // skip_action = true;
                     } else {
                         //search for outputs
-                        if (node.outputs) {
+                        if (node.outputs && TOOLBAR.selected == "Tweaker") {
                             for ( var i = 0, l = node.outputs.length; i < l; ++i ) {
                                 var output = node.outputs[i];
                                 var link_pos = node.getConnectionPos(false, i);
@@ -6055,7 +6055,7 @@ LGraphNode.prototype.executeAction = function(action)
                         }
 
                         //search for inputs
-                        if (node.inputs) {
+                        if (node.inputs && TOOLBAR.selected == "Tweaker") {
                             for ( var i = 0, l = node.inputs.length; i < l; ++i ) {
                                 var input = node.inputs[i];
                                 var link_pos = node.getConnectionPos(true, i);
@@ -6136,7 +6136,7 @@ LGraphNode.prototype.executeAction = function(action)
                 }
 
                 //it wasn't clicked on the links boxes
-                if (!skip_action) {
+                if (!skip_action && TOOLBAR.selected == "Selector") {
                     var block_drag_node = false;
 					var pos = [e.canvasX - node.pos[0], e.canvasY - node.pos[1]];
 

@@ -20,6 +20,14 @@ TOOLBAR.show = (bool, toolname=false, shortcut=false, desc=false) => {
     }
 }
 
+TOOLBAR.onequip = (toolName) => {
+    if (toolName == 'Tweaker') {
+        document.body.classList.add('tweak');
+    } else {
+        document.body.classList.remove('tweak');
+    }
+}
+
 TOOLBAR.equip = (toolName) => {
     TOOLBAR.selected = toolName;
     if (TOOLBAR.tools[toolName].cursor) {
@@ -27,6 +35,7 @@ TOOLBAR.equip = (toolName) => {
     } else {
         document.documentElement.style.setProperty('--cursor', `url("../assets/icons/${TOOLBAR.tools[toolName].icon}.svg") 0 0, auto`);
     }
+    TOOLBAR.onequip(toolName);
     // TOOLBAR.tools[toolName].onequip();
 }
 
@@ -77,14 +86,15 @@ TOOLBAR.createNode = (name) => {
     return node;
 }
 
-TOOLBAR.append('Selector', 'Select and connect elements together', 'cursor', true, 'V');
+TOOLBAR.append('Selector', 'Select and move nodes', 'cursor', true, 'V');
+TOOLBAR.append('Tweaker', 'Modify and connect nodes', 'tweaker', true, 'A');
 TOOLBAR.append('Hand', 'Move through the workspace', 'hand', false, 'H');
 TOOLBAR.append('Value', 'Create new values', 'number', true, 'P');
 TOOLBAR.append('Operator', 'Add, substract, multiply or divide two values', 'operation', true, 'O');
 TOOLBAR.append('Generator', 'Generate new values from graphs', 'algorithm', true, 'G');
 TOOLBAR.append('Curve generator', 'Generate new values using a Bézier curve', 'easing', true, 'B');
 TOOLBAR.append('Color', 'Retreive colors by changing its hue, saturation and lightness', 'color', true, 'C');
-TOOLBAR.append('Papers', 'Create user-defined instructions that you can reuse everywhere', 'paper', false, 'F');
+// TOOLBAR.append('Papers', 'Create user-defined instructions that you can reuse everywhere', 'paper', false, 'F');
 
 TOOLBAR.equip('Selector');
  

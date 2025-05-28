@@ -50,6 +50,7 @@ body * {
 
 #result {
     position: fixed;
+    z-index: 2;
     bottom: 8px;
     right: 8px;
     width: 256px;

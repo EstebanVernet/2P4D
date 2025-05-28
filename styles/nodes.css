@@ -13,6 +13,10 @@ svg {
     pointer-events: all;
 }
 
+body:not(.tweak) .dom-node, body:not(.tweak) .dom-node * {
+    pointer-events: none;
+}
+
 .operator {
     cursor: pointer;
 }

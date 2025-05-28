@@ -30,7 +30,6 @@ function createDomOperator(parent, onupdate) {
             clone.classList.add('hidden');
         })
     });
-
 }
 
 LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
@@ -74,6 +73,9 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
                     break;
                 case "mod":
                     result = A % B;
+                    break;
+                case "pow":
+                    result = Math.pow(A, B);
                     break;
             }
             this.setOutputData(0, result);

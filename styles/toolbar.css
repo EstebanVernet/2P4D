@@ -1,14 +1,14 @@
 #toolbar {
     position: fixed;
-    left : 0;
-    top: 0;
+    z-index: 2;
+    left : 4px;
+    top: 4px;
     width: fit-content;
     height: fit-content;
 
     display: flex;
     flex-direction: column;
     padding: 8px;
-
 }
 
 #toolbar .tools, #toolbar .others {
