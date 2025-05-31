@@ -35,7 +35,7 @@ function createDomOperator(parent, onupdate) {
 LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
     [20, 46],
     function(elm) {
-        // elm.properties = { value: 0 };
+        elm.properties = {operator: "add"};
 
         // console.log(elm.container)
         // const num = createAnchorNumber(elm.container);
@@ -43,7 +43,8 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
         let operator_choice = "add";
         const operatorDom = new createDomOperator(elm.container, (val) => {
             operator_choice = val;
-            this.properties.operator = val;
+            elm.properties.operator = val;
+            elm.graph.onNodePropertyChanged();
         })
 
         elm.addInput("entry1", "number");
@@ -82,6 +83,10 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
         }
 
         elm.onConfigure = () => {
+            operatorDom.setIcon(elm.properties.operator);
+        }
+
+        elm.onAdded = () => {
             operatorDom.setIcon(elm.properties.operator);
         }
     }

@@ -95,6 +95,51 @@ body:not(.tweak) .dom-node, body:not(.tweak) .dom-node * {
     outline: solid 1px var(--box-color);
 }
 
+#popup-funcs {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: var(--box-color);
+    padding: 4px;
+    padding-right: 16px;
+    max-height: 150px;
+    overflow-y: scroll;
+
+    z-index: 3;
+}
+
+#popup-funcs:not(.show) {
+    display: none;
+}
+
+.func-item {
+    min-width: fit-content;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background-color: #E2E2E2;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.func-item * {
+    stroke: #2B2829;
+    color: #2B2829;
+    fill: transparent;
+}
+
+.node-func {
+    border: solid 1px #4F7FFF;
+    background-color: #545454;
+    stroke: white;
+    fill: none;
+    width: fit-content;
+    cursor: pointer;
+}
+
 /* Color node */
 
 .node-color {

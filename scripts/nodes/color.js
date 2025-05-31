@@ -129,9 +129,9 @@ LiteGraph.registerNodeType("custom/color", DOM_NODE.new(
             // console.log(col.hue, col.saturation, col.value);
             const newCol = hsv2hsl(col.hue, col.saturation / 100, col.value / 100);
 
-            const hue = newCol[0];
-            const saturation = newCol[1] * 100;
-            const value = newCol[2] * 100;
+            const hue = newCol[0] / 360;
+            const saturation = newCol[1];
+            const value = newCol[2];
             
             // console.log(hue, saturation, value);
             this.setOutputData(0, hue);

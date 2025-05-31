@@ -139,6 +139,7 @@ graph.moveToolEvent = () => {
 
 // Nodes creation tools
 
+let generator_waiting = false;
 workspace.addEventListener('click', (e) => {
     switch (TOOLBAR.selected) {
         case 'Value':
@@ -153,7 +154,22 @@ workspace.addEventListener('click', (e) => {
         case 'Color': 
             TOOLBAR.createNode('custom/color');
             break;
-        default:
+        case 'Generator':
+            if (!generator_waiting) {
+                e.stopPropagation();
+                // console.log(e.offsetX, e.offsetY);
+                generator_waiting = true;
+                FUNCNODE.selectFunction(e.offsetX, e.offsetY).then((name) => {
+                    // console.log(name);
+                    const node = TOOLBAR.createNode('custom/func');
+                    node.properties.name = name;
+                    node.changeFunction(name);
+                    generator_waiting = false;
+                })
+                .catch(() => {
+                    generator_waiting = false;
+                });
+            }
             break;
     }
 });

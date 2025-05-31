@@ -37,7 +37,7 @@ function handleWorkflowChange() {
         
         return {
             offset: { x: nodes_output.getValue('Horizontal offset') || 0, y: nodes_output.getValue('Vertical offset') || 0 },
-            col: 'hsl(' + (nodes_output.getValue('Hue') || 0) + ', ' + (nodes_output.getValue('Saturation') || 0) + '%, ' + (nodes_output.getValue('Value') || 0) + '%)',
+            col: 'hsl(' + (nodes_output.getValue('Hue') * 360 || 0) + ', ' + (nodes_output.getValue('Saturation') * 100 || 0) + '%, ' + (nodes_output.getValue('Value') * 100 || 0) + '%)',
             show: true,
             size: {
                 w: nodes_output.getValue('Width') || 1, // Add fallback

@@ -200,7 +200,7 @@ LiteGraph.registerNodeType("custom/number", DOM_NODE.new(
         }
 
         elm.onExecute = function() {
-            this.setOutputData(0, anchorValue);
+            this.setOutputData(0, anchorValue / 16);
         }
 
         elm.onConfigure = () => {

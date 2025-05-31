@@ -2,14 +2,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Macro-projet</title>
+    <title>2P4D</title>
 
     <script src="./node_modules/@svgdotjs/svg.js/dist/svg.js"></script>
     <script src="./node_modules/@svgdotjs/svg.draggable.js/dist/svg.draggable.js"></script>
 
     <script src="./scripts/litegraph.js"></script>
+    <script src="./scripts/perlin.js"></script>
     
     <link rel="stylesheet" href="./styles/main.css">
+    <link rel="shortcut icon" href="./assets/icons/number.svg" type="image/x-icon">
 </head>
 <body>
     <!-- Templates -->
@@ -38,6 +40,13 @@
         </div>
     </template>
 
+    <template id="tem-func-item">
+        <div class="func-item">
+            <div class="title"></div>
+            <div class="plot"></div>
+        </div>
+    </template>
+
     <!-- Body -->
     <div id="toolbar" class="box">
         <div class="tools">
@@ -52,6 +61,8 @@
             <img id="load-graph" src="./assets/icons/upload.svg" width="16" alt="load">
         </div>
     </div>
+
+    <div id="popup-funcs"></div>
 
     <div id="result"></div>
 
@@ -69,6 +80,7 @@
     <script src="./scripts/nodes/output.js"></script>
     <script src="./scripts/nodes/bezier_func.js"></script>
     <script src="./scripts/nodes/color.js"></script>
+    <script src="./scripts/nodes/func.js"></script>
 
     <script src="./scripts/render.js"></script>
     <script src="./scripts/main.js"></script>
