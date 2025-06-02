@@ -11,8 +11,8 @@ function render(f) {
             const i = x + y*16;
             const { offset={x:0, y:0}, col='black', show=true, size={w: 1, h: 1} } = f(i, x, y);
             const params = {
-                x: width/16*x + width/16/2 + offset.x,
-                y: height/16*y + height/16/2 + offset.y,
+                x: width/16*x + width/16/2 + offset.x * width,
+                y: height/16*y + height/16/2 + offset.y * height,
                 w: width/16 * size.w,
                 h: height/16 * size.h
             }

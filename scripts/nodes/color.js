@@ -154,7 +154,7 @@ LiteGraph.registerNodeType("custom/color", DOM_NODE.new(
 
         elm.onAdded = () => {
             col.setH(0);
-            col.setSV(0, 0);
+            col.setSV(0, 100);
             col.updated();    
         }
     }
