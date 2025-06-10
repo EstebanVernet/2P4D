@@ -30,6 +30,12 @@ TOOLBAR.onequip = (toolName) => {
 
 TOOLBAR.equip = (toolName) => {
     TOOLBAR.selected = toolName;
+
+    for (const tool in TOOLBAR.tools) {
+        TOOLBAR.tools[tool].classList.remove('selected');
+    }
+    TOOLBAR.tools[toolName].classList.add('selected');
+
     if (TOOLBAR.tools[toolName].cursor) {
         document.documentElement.style.setProperty('--cursor', `url("../assets/icons/cursor/${TOOLBAR.tools[toolName].icon}.svg") 0 0, auto`);
     } else {
@@ -83,6 +89,7 @@ TOOLBAR.createNode = (name) => {
     const node = LiteGraph.createNode(name);
     node.pos = [x, y];
     graph.add(node);
+    TOOLBAR.equip('Tweaker');
     return node;
 }
 

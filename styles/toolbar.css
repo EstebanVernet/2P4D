@@ -23,6 +23,12 @@
     cursor: pointer;
 }
 
+#toolbar .tool.selected {
+    background-color: #00000044;
+    outline: solid 4px #00000044;
+    outline-offset: 0px;
+}
+
 #toolbar_tooltip {
     position: absolute;
     right: 0;
