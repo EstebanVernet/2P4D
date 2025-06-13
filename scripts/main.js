@@ -133,3 +133,9 @@ btn_load.addEventListener("click", () => {
     });
     fileInput.click();
 });
+
+fetch('./examples/rainbow.json')
+.then(response => response.json())
+.then(graphData => {
+    loadGraph(graphData);
+});
