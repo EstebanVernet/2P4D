@@ -141,7 +141,7 @@ bezierfunc.create = function(parent) {
 
     const curve = new bezierfunc.beziercurve(svgElement, 0, 0, 0, 0, 0, 0, 0, 0);
 
-    const p0 = new bezierfunc.draggableAnchor('rect', svgElement, 0, 0, 0, 0, 0, 128, (x, y) => {
+    const p0 = new bezierfunc.draggableAnchor('ellipse', svgElement, 0, 0, 0, 0, 0, 128, (x, y) => {
         this.data.p0.x = x;
         this.data.p0.y = y;
         this.updateObject();
@@ -156,7 +156,7 @@ bezierfunc.create = function(parent) {
         this.data.p2.y = y;
         this.updateObject();
     });
-    const p3 = new bezierfunc.draggableAnchor('rect', svgElement, 128, 128, 128, 0, 128, 128, (x, y) => {
+    const p3 = new bezierfunc.draggableAnchor('ellipse', svgElement, 128, 128, 128, 0, 128, 128, (x, y) => {
         this.data.p3.x = x;
         this.data.p3.y = y;
         this.updateObject();

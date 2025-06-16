@@ -13,6 +13,101 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
+base.anchorNumberGuide = function (parent, x, y) {
+    this.elm = parent.ellipse(8, 8)
+    .center(x, y)
+    .attr({ class: 'guide' });
+
+    this.setSize = function (w, h) {
+        this.elm.size(w, h);
+        this.elm.center(x, y);
+    }
+
+    this.show = function (bool) {
+        this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
+    }
+}
+base.anchorPrecisionGuide = function (parent, x, y, radius = 16) {
+    this.centerX = x;
+    this.centerY = y;
+    this.radius = radius;
+    this.startAngle = 0;
+    this.endAngle = Math.PI / 2; // 90 degrees default
+    
+    // Helper function to create arc path string
+    this.createArcPath = function() {
+        // Convert angles to standard SVG coordinate system (0° = right, clockwise)
+        const startX = this.centerX + this.radius * Math.cos(this.startAngle);
+        const startY = this.centerY + this.radius * Math.sin(this.startAngle);
+        const endX = this.centerX + this.radius * Math.cos(this.endAngle);
+        const endY = this.centerY + this.radius * Math.sin(this.endAngle);
+        
+        // Calculate angle difference
+        let angleDiff = this.endAngle - this.startAngle;
+        
+        // Normalize angle difference
+        while (angleDiff < 0) angleDiff += 2 * Math.PI;
+        while (angleDiff > 2 * Math.PI) angleDiff -= 2 * Math.PI;
+        
+        // Determine if the arc should be drawn as the large arc
+        const largeArc = angleDiff > Math.PI ? 1 : 0;
+        
+        // SVG arc path: M startX,startY A radius,radius 0 largeArc,sweepFlag endX,endY
+        const sweepFlag = 1; // Always clockwise
+        
+        // If start and end are the same, draw a full circle
+        if (Math.abs(angleDiff) < 0.001 || Math.abs(angleDiff - 2 * Math.PI) < 0.001) {
+            // Draw full circle as two semicircles
+            const midX = this.centerX + this.radius * Math.cos(this.startAngle + Math.PI);
+            const midY = this.centerY + this.radius * Math.sin(this.startAngle + Math.PI);
+            return `M ${startX} ${startY} A ${this.radius} ${this.radius} 0 0 1 ${midX} ${midY} A ${this.radius} ${this.radius} 0 0 1 ${startX} ${startY}`;
+        }
+        
+        return `M ${startX} ${startY} A ${this.radius} ${this.radius} 0 ${largeArc} ${sweepFlag} ${endX} ${endY}`;
+    };
+
+    // Create the initial arc path
+    this.elm = parent.path(this.createArcPath())
+    .attr({ class: 'guide' });
+    
+    // Set the size (radius) of the arc
+    this.setSize = function (newRadius) {
+        this.radius = newRadius;
+        this.updatePath();
+    };
+    
+    // Set start and end angles (in radians)
+    this.setAngles = function (startAngle, endAngle) {
+        this.startAngle = startAngle;
+        this.endAngle = endAngle;
+        this.updatePath();
+    };
+    
+    // Set start and end angles (in degrees) - convenience method
+    this.setAnglesDegrees = function (startDegrees, endDegrees) {
+        this.startAngle = (startDegrees * Math.PI) / 180;
+        this.endAngle = (endDegrees * Math.PI) / 180;
+        this.updatePath();
+    };
+    
+    // Update the path after changes
+    this.updatePath = function() {
+        this.elm.plot(this.createArcPath());
+    };
+    
+    // Set center position
+    this.setCenter = function(newX, newY) {
+        this.centerX = newX;
+        this.centerY = newY;
+        this.updatePath();
+    };
+    
+    // Show/hide the arc
+    this.show = function (bool) {
+        this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
+    };
+};
+
 base.draggableAnchor = function (parent, ox, oy, x, y, moved) {
     // Calculate initial radius from origin (0,0)
 
@@ -79,12 +174,33 @@ instances.anchorNumber = function (node, parent, cx, cy) {
         ay2: 0
     }
 
+    const num_guide = new base.anchorNumberGuide(parent, cx, cy);
+    num_guide.show(false);
+
+    const precision_guide = new base.anchorPrecisionGuide(parent, cx, cy);
+
+    document.addEventListener("mouseup", () => {
+        num_guide.show(false);
+        precision_guide.show(false);
+    })
+
     const line2 = new base.line(parent, cx, cy, cx, cy + 16);
     line2.secondary();
     const anchor2 = new base.draggableAnchor(parent, cx, cy, cx, cy + 16, (x, y) => {
         this.data.ax2 = x;
         this.data.ay2 = y;
         line2.update(cx, cy, x, y);
+
+
+        const l1_ang = Math.atan2(this.data.ay1 - this.data.cy, this.data.ax1 - this.data.cx);
+        const l2_ang = Math.atan2(this.data.ay2 - this.data.cy, this.data.ax2 - this.data.cx);
+        
+        const l1_dist = distance(this.data.cx, this.data.cy, this.data.ax1, this.data.ay1);
+        const l2_dist = distance(this.data.cx, this.data.cy, this.data.ax2, this.data.ay2);
+        
+        precision_guide.show(true)
+        precision_guide.setAngles(l1_ang, l2_ang);
+        precision_guide.setSize(Math.min(l1_dist, l2_dist));
 
         const val = compute(this.data);
         this.onupdate(val);
@@ -94,6 +210,8 @@ instances.anchorNumber = function (node, parent, cx, cy) {
     
     const line1 = new base.line(parent, cx, cy, cx, cy + 32);
     const anchor1 = new base.draggableAnchor(parent, cx, cy, cx, cy + 32, (x, y) => {
+        num_guide.show(true);
+
         const old_angle = Math.atan2(this.data.ay1 - this.data.cy, this.data.ax1 - this.data.cx);
         const new_angle = Math.atan2(y - this.data.cy, x - this.data.cx);
         const diff = new_angle - old_angle;
@@ -104,6 +222,10 @@ instances.anchorNumber = function (node, parent, cx, cy) {
 
         const l2_dist = distance(this.data.cx, this.data.cy, this.data.ax2, this.data.ay2);
         const l2_angle = Math.atan2(this.data.ay2 - this.data.cy, this.data.ax2 - this.data.cx);
+
+        const l1_dist = distance(this.data.cx, this.data.cy, this.data.ax1, this.data.ay1);
+        const dist_rounded = Math.floor(l1_dist * 2 / 64) * 64 + 32;
+        num_guide.setSize(dist_rounded, dist_rounded);
 
         this.data.ax2 = this.data.cx + l2_dist * Math.cos(l2_angle + diff);
         this.data.ay2 = this.data.cy + l2_dist * Math.sin(l2_angle + diff);
@@ -131,7 +253,8 @@ instances.anchorNumber = function (node, parent, cx, cy) {
     }
 
     this.onupdate(this.data);
-
+    num_guide.show(false);
+    precision_guide.show(false);
 }
 
 const distance = function (x1, y1, x2, y2) {

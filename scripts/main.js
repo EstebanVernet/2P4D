@@ -6,16 +6,17 @@ class staticNodes {
         this.list = list;
         this.nodes = {};
         this.list.forEach(node => {
-            this.add(node.name, node.x, node.y);
+           this.add(node.name, node.x, node.y, node.indicator);
         })
     }
 
-    add(name, x, y) {
+    add(name, x, y, indicator) {
         const n = LiteGraph.createNode(this.type);
         n.pos = [x, y];
         n.setName(name);
         graph.add(n);
         this.nodes[name] = n;
+        if (indicator) n.setIndicator(indicator);
     }
 
     getValue(name) {
@@ -30,28 +31,33 @@ class staticNodes {
     graphUpdated() {
         graph._nodes.forEach(node => {
             if (node.type === this.type) {
-                this.nodes[node.properties.name] = node;
+                if (node.inputName == "Index") {
+                    graph.remove(node);
+                } else {
+                    this.nodes[node.properties.name] = node;
+                    if (this.list.find(x => x.name === node.properties.name).indicator) node.setIndicator(this.list.find(x => x.name === node.properties.name).indicator);
+                }
             }
         })
     }
 }
 
 const nodes_input = new staticNodes("custom/input", [
-    { name: "Index", x: 50, y: 150 },
+    // { name: "Index", x: 50, y: 150 },
     { name: "Vertical pos.", x: 50, y: 200 },
     { name: "Horizontal pos.", x: 50, y: 250 }
 ]);
 
 const nodes_output = new staticNodes("custom/output", [
-    { name: "Vertical offset", x: 950, y: 150 },
-    { name: "Horizontal offset", x: 950, y: 200 },
+    { name: "Vertical offset", x: 950, y: 150, indicator: (t) => {return {y: t}} },
+    { name: "Horizontal offset", x: 950, y: 200, indicator: (t) => {return {x: t}} },
     
-    { name: "Width", x: 950, y: 300 },
-    { name: "Height", x: 950, y: 350 },
+    { name: "Width", x: 950, y: 300, indicator: (t) => {return {w: t}} },
+    { name: "Height", x: 950, y: 350, indicator: (t) => {return {h: t}} },
 
-    { name: "Hue", x: 950, y: 450 },
-    { name: "Saturation", x: 950, y: 500 },
-    { name: "Value", x: 950, y: 550 },
+    { name: "Hue", x: 950, y: 450, indicator: (t) => {return {hue: t}} },
+    { name: "Saturation", x: 950, y: 500, indicator: (t) => {return {s: t}} },
+    { name: "Value", x: 950, y: 550, indicator: (t) => {return {v: t}} },
 ]);
 
 // var input_index = LiteGraph.createNode("custom/bezierfunc");

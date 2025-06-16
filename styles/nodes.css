@@ -76,6 +76,7 @@ body:not(.tweak) .dom-node, body:not(.tweak) .dom-node * {
 .input-output {
     display: flex;
     align-items: center;
+    gap: 16px;
     justify-content: center;
     background-color: var(--box-color);
     pointer-events: none;

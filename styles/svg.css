@@ -17,3 +17,15 @@
     fill: none;
     stroke: #4FD9FF;
 }
+
+/* Guides */
+
+.guide {
+    pointer-events: none !important;
+    stroke: var(--guides-color);
+    fill: transparent;
+    visibility: hidden;
+}
+.guide.visible {
+    visibility: visible;
+}

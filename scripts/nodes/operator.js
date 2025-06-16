@@ -30,6 +30,12 @@ function createDomOperator(parent, onupdate) {
             clone.classList.add('hidden');
         })
     });
+
+    document.addEventListener('click', (event) => {
+        if (!clone.contains(event.target) && !bg.contains(event.target)) {
+            clone.classList.add('hidden');
+        }
+    });
 }
 
 LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
