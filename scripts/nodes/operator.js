@@ -3,6 +3,7 @@ function createDomOperator(parent, onupdate) {
     bg.src = './assets/operators/elm.svg';
     bg.classList.add('operator');
     parent.appendChild(bg);
+    this.bg = bg;
 
     const icon = document.createElement('img');
     icon.src = './assets/operators/add.svg';
@@ -95,5 +96,15 @@ LiteGraph.registerNodeType("custom/operator", DOM_NODE.new(
         elm.onAdded = () => {
             operatorDom.setIcon(elm.properties.operator);
         }
+
+        elm.checkInputs = () => {
+            let error = false;
+            for (let i = 0 ; i< elm.inputs.length ; i++) {
+                if (elm.inputs[i].link == null) error = true;
+            }
+            operatorDom.bg.src = error ? './assets/operators/err.svg' : './assets/operators/elm.svg';
+        }
+
+        elm.onConnectionsChange = elm.checkInputs;
     }
 ));
