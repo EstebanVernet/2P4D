@@ -26,6 +26,10 @@ base.anchorNumberGuide = function (parent, x, y) {
     this.show = function (bool) {
         this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
     }
+
+    this.front = function() {
+        this.elm.front();
+    }
 }
 base.anchorPrecisionGuide = function (parent, x, y, radius = 16) {
     this.centerX = x;
@@ -106,6 +110,10 @@ base.anchorPrecisionGuide = function (parent, x, y, radius = 16) {
     this.show = function (bool) {
         this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
     };
+
+    this.front = function() {
+        this.elm.front();
+    }
 };
 
 base.draggableAnchor = function (parent, ox, oy, x, y, moved) {
@@ -255,6 +263,9 @@ instances.anchorNumber = function (node, parent, cx, cy) {
     this.onupdate(this.data);
     num_guide.show(false);
     precision_guide.show(false);
+
+    num_guide.front();
+    precision_guide.front();
 }
 
 const distance = function (x1, y1, x2, y2) {

@@ -50,7 +50,7 @@ FUNCNODE.createPreview = function(name, parent) {
 
 FUNCNODE.plot = function(f, count) {
     const values = [];
-    for (let i = -5 ; i<= 5 ; i+=0.05) {    
+    for (let i = 0 ; i<= 1 ; i+=0.01) {    
         if (count == 1) {
             values.push(f(i));
         } else if (count == 2) {
@@ -101,13 +101,13 @@ FUNCNODE.selectFunction = function(x, y) {
     });
 }
 
-FUNCNODE.addfunction("Sinus", 1, function(x) { return Math.sin(x); });
-FUNCNODE.addfunction("Cosinus", 1, function(x) { return Math.cos(x); });
-FUNCNODE.addfunction("Tangens", 1, function(x) { return Math.tan(x); });
-FUNCNODE.addfunction("Maximum", 2, function(x, y) { return Math.max(x, y); });
-FUNCNODE.addfunction("Minimum", 2, function(x, y) { return Math.min(x, y); });
-FUNCNODE.addfunction("Positive", 1, function(x) { return Math.abs(x); });
-FUNCNODE.addfunction("Noise", 2, function(x, y) { return noise.simplex2(x, y); });
+FUNCNODE.addfunction("Sinus", 1, function(x) { return Math.sin(x * Math.PI * 2); });
+FUNCNODE.addfunction("Cosinus", 1, function(x) { return Math.cos(x * Math.PI * 2); });
+FUNCNODE.addfunction("Tangens", 1, function(x) { return Math.tan(x * 3); });
+// FUNCNODE.addfunction("Maximum", 2, function(x, y) { return Math.max(x, y); });
+// FUNCNODE.addfunction("Minimum", 2, function(x, y) { return Math.min(x, y); });
+// FUNCNODE.addfunction("Positive", 1, function(x) { return Math.abs(x); });
+FUNCNODE.addfunction("Noise", 2, function(x, y) { return noise.simplex2(x * 3, y * 3); });
 
 LiteGraph.registerNodeType("custom/func", DOM_NODE.new(
     [128, 32],
@@ -134,6 +134,7 @@ LiteGraph.registerNodeType("custom/func", DOM_NODE.new(
             while (elm.inputs.length > input_count) {
                 elm.removeInput(elm.inputs.length - 1);
             }
+            elm.checkInputs();
         }
 
         elm.container.addEventListener("click", (e) => {
@@ -160,6 +161,17 @@ LiteGraph.registerNodeType("custom/func", DOM_NODE.new(
             const out = f(...elm.inputs.map((x, index) => elm.getInputData(index)));
             elm.setOutputData(0, out);
         }
+
+        elm.checkInputs = () => {
+            elm.container.classList.remove("error")
+            for (let i = 0 ; i< elm.inputs.length ; i++) {
+                if (elm.inputs[i].link == null) {
+                    elm.container.classList.add("error")
+                }
+            }
+        }
+
+        elm.onConnectionsChange = elm.checkInputs;
     }
 ));
 

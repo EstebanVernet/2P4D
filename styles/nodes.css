@@ -32,6 +32,7 @@ body:not(.tweak) .dom-node, body:not(.tweak) .dom-node * {
     transform: translate(-50%, calc(-100% - 16px));
     display: flex;
     gap: 8px;
+    z-index: 100;
 
     background-color: var(--box-color);
     /* border: solid 1px white; */
@@ -139,6 +140,10 @@ body:not(.tweak) .dom-node, body:not(.tweak) .dom-node * {
     fill: none;
     width: fit-content;
     cursor: pointer;
+}
+
+.node-func.error {
+    border: solid 1px #FF4F4F;
 }
 
 /* Color node */

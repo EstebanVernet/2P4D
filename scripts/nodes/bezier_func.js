@@ -32,6 +32,33 @@ bezierfunc.draggableAnchor = function (type, parent, x, y, minX, minY, maxX, max
     moved(x, y);
 }
 
+bezierfunc.rectGuide = function (parent, x, y, w, h) {
+    this.elm = parent.rect(w, h)
+    .move(x, y)
+    .attr({ class: 'guide' });
+
+    this.show = function (bool) {
+        this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
+    }
+
+    this.front = function() {
+        this.elm.front();
+    }
+}
+
+bezierfunc.lineGuide = function (parent, x1, y1, x2, y2) {
+    this.elm = parent.line(x1, y1, x2, y2)
+    .attr({ class: 'guide' });
+
+    this.show = function (bool) {
+        this.elm.attr({ class: bool ? 'guide visible' : 'guide' });
+    }
+
+    this.front = function() {
+        this.elm.front();
+    }
+}
+
 bezierfunc.line = function (parent, x1, y1, x2, y2) {
     this.elm = parent.line(x1, y1, x2, y2)
     .attr({ class: 'line' });
@@ -136,6 +163,16 @@ bezierfunc.create = function(parent) {
         return bezierfunc.compute(this.data.p0, this.data.p1, this.data.p2, this.data.p3, x);
     }
 
+    const guide_left = new bezierfunc.rectGuide(svgElement, -4, -4, 8, 128 + 8);
+    const guide_right = new bezierfunc.rectGuide(svgElement, 128 - 4, -4, 8, 128 + 8);
+    const guide_box = new bezierfunc.rectGuide(svgElement, 0, -64, 128, 128*2);
+
+    document.addEventListener("mouseup", () => {
+        guide_left.show(false);
+        guide_right.show(false);
+        guide_box.show(false);
+    })
+
     const line0 = new bezierfunc.line(svgElement, 0, 0, 0, 0);
     const line1 = new bezierfunc.line(svgElement, 0, 0, 0, 0);
 
@@ -145,24 +182,34 @@ bezierfunc.create = function(parent) {
         this.data.p0.x = x;
         this.data.p0.y = y;
         this.updateObject();
+        guide_left.show(true);
     });
     const p1 = new bezierfunc.draggableAnchor('ellipse', svgElement, 32, 32, 0, -64, 128, 128 + 64, (x, y) => {
         this.data.p1.x = x;
         this.data.p1.y = y;
         this.updateObject();
+        guide_box.show(true);
     });
     const p2 = new bezierfunc.draggableAnchor('ellipse', svgElement, 128-32, 128-32, 0, -64, 128, 128 + 64, (x, y) => {
         this.data.p2.x = x;
         this.data.p2.y = y;
         this.updateObject();
+        guide_box.show(true);
     });
     const p3 = new bezierfunc.draggableAnchor('ellipse', svgElement, 128, 128, 128, 0, 128, 128, (x, y) => {
         this.data.p3.x = x;
         this.data.p3.y = y;
         this.updateObject();
+        guide_right.show(true);
     });
 
     this.updateObject();
+    guide_left.show(false);
+    guide_right.show(false);
+    guide_box.show(false);
+    guide_left.front();
+    guide_right.front();
+    guide_box.front();
 }
 
 LiteGraph.registerNodeType("custom/bezierfunc", DOM_NODE.new(
